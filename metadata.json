@@ -1,0 +1,6 @@
+{
+  "name": "EduLocker",
+  "description": "Govt. of Odisha state-level student digital ecosystem for secure academic records, scholarships, digital identity, and Video KYC.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

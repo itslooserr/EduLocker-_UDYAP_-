@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Clean Minimalist Rich Gradient (Odisha Magenta to Deep Crimson) -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="135"
+                android:startColor="#E11D48"
+                android:centerColor="#BE123C"
+                android:endColor="#881337"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Subtle Soft Lighting Halo -->
+    <path
+        android:fillColor="#15FFFFFF"
+        android:pathData="M54,54m-38,0a38,38 0,1 1,76 0a38,38 0,1 1,-76 0" />
+</vector>
