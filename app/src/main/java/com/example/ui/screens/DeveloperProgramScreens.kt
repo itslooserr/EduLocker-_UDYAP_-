@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -653,7 +655,7 @@ fun LessonOverviewScreen(
                         .border(1.5.dp, DarkBorder, RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .clickable {
-                            Toast.makeText(context, "Lesson saved to your EduLocker bookmarks", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Lesson saved to your UDYAP bookmarks", Toast.LENGTH_SHORT).show()
                         },
                     color = Color(0xFF1E293B)
                 ) {
@@ -769,6 +771,8 @@ fun VideoPlayerScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -829,7 +833,7 @@ fun VideoPlayerScreen(
                             isBookmarked = !isBookmarked
                             Toast.makeText(
                                 context,
-                                if (isBookmarked) "Lesson bookmarked to EduLocker" else "Bookmark removed",
+                                if (isBookmarked) "Lesson bookmarked to UDYAP" else "Bookmark removed",
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
@@ -928,7 +932,7 @@ fun VideoPlayerScreen(
 
                     // Simulated Code lines
                     Text(
-                        text = "1  const app = document.querySelector('#edulocker-root');\n2  const navTree = buildNavigationTree(state.modules);\n3  app.appendChild(navTree);\n4  // Active Lesson: DOM Mutation & Event Loop",
+                        text = "1  const app = document.querySelector('#udyap-root');\n2  const navTree = buildNavigationTree(state.modules);\n3  app.appendChild(navTree);\n4  // Active Lesson: DOM Mutation & Event Loop",
                         color = Color(0xFF38BDF8),
                         fontSize = 11.sp,
                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
@@ -1343,7 +1347,7 @@ fun VideoPlayerScreen(
                                 Icon(
                                     imageVector = Icons.Filled.PlayArrow,
                                     contentDescription = "YouTube",
-                                    tint = Color(0xFFE11D48),
+                                    tint = Color(0xFFF21147),
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -1542,7 +1546,7 @@ fun VideoPlayerScreen(
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(14.dp))
                                     .clickable {
-                                        Toast.makeText(context, "Downloading Web_Dev_Notes.pdf to EduLocker Storage", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "Downloading Web_Dev_Notes.pdf to UDYAP Storage", Toast.LENGTH_SHORT).show()
                                     },
                                 shape = RoundedCornerShape(14.dp),
                                 color = Color(0xFFEFF6FF),

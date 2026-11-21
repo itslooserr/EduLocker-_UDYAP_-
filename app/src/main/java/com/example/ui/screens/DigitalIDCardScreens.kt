@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -82,6 +84,8 @@ fun DigitalIDCardScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 22.dp)
     ) {
         Column(
@@ -90,7 +94,7 @@ fun DigitalIDCardScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // 3D FLIPPABLE ID CARD
             Box(
@@ -191,7 +195,7 @@ private fun IdCardFrontView(
                         )
                         close()
                     }
-                    drawPath(path, color = Color(0xFFD81B60))
+                    drawPath(path, color = Color(0xFFF21147))
                 }
 
                 // School Emblem & Name
@@ -282,7 +286,7 @@ private fun IdCardFrontView(
                         Spacer(modifier = Modifier.height(6.dp))
 
                         Text(
-                            text = "EduLocker ID: $eduLockerId",
+                            text = "UDYAP ID: $eduLockerId",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF64748B),
                             fontSize = 13.sp
@@ -323,7 +327,7 @@ private fun IdCardFrontView(
                         )
 
                         Text(
-                            text = "EduLocker",
+                            text = "UDYAP",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.ExtraBold,
                             color = Color(0xFF475569),
@@ -346,7 +350,7 @@ private fun IdCardBackView() {
             .fillMaxSize()
             .clip(RoundedCornerShape(22.dp)),
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFD81B60)) // Solid Magenta
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF21147)) // UDYAP Crimson
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -480,12 +484,12 @@ private fun DigitalIdSchoolEmblemLogo(size: androidx.compose.ui.unit.Dp, modifie
             .size(size)
             .clip(CircleShape)
             .background(PureWhite)
-            .border(1.5.dp, Color(0xFFD81B60), CircleShape),
+            .border(1.5.dp, Color(0xFFF21147), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(color = Color(0xFFFEF3C7), radius = size.toPx() * 0.44f)
-            drawCircle(color = Color(0xFFD81B60), radius = size.toPx() * 0.44f, style = Stroke(width = 1.5.dp.toPx()))
+            drawCircle(color = Color(0xFFF21147), radius = size.toPx() * 0.44f, style = Stroke(width = 1.5.dp.toPx()))
             // Inner quadrant colors
             drawArc(
                 color = Color(0xFF60A5FA),

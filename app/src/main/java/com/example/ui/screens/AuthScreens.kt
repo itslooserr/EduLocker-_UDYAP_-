@@ -38,11 +38,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import com.example.ui.theme.CanvasCream
 import com.example.ui.theme.OdishaMagenta
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.TextDark
 import com.example.ui.theme.TextMuted
+import com.example.ui.theme.UdyapCrimson
 import com.example.ui.viewmodel.EduLockerViewModel
 
 // =========================================================================
@@ -67,21 +73,20 @@ fun LoginOptionsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
                 .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            // Dual Circle Logo (Pink circle + overlapping magenta circle on bottom right)
-            EduLockerDualDotsLogo(size = 54.dp)
+            EduLockerDualDotsLogo(size = 44.dp)
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Welcome Title
             Text(
-                text = "Welcome to EduLocker",
+                text = "Welcome to UDYAP",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF334155),
-                fontSize = 21.sp
+                color = TextDark,
+                fontSize = 22.sp
             )
 
             Spacer(modifier = Modifier.height(3.dp))
@@ -89,32 +94,30 @@ fun LoginOptionsScreen(
             Text(
                 text = "Sign in to continue your journey.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF4B5563),
+                color = TextMuted,
                 fontSize = 14.5.sp
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(
-                text = "By continuing, you agree to EduLocker's Terms of Service\nand Privacy Policy.",
+                text = "By continuing, you agree to UDYAP's Terms of Service\nand Privacy Policy.",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF6B7280),
+                color = TextMuted,
                 fontSize = 11.5.sp,
                 lineHeight = 15.sp
             )
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // 1. "Login with Aadhar" Double-Border Button (Exact from 8.png)
             EduLockerPillButton(
-                text = "Login with Aadhar",
+                text = "Login with Aadhaar",
                 onClick = onLoginWithAadhaar,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // 2. "Login with Phone" Double-Border Button (Exact from 8.png)
             EduLockerPillButton(
                 text = "Login with Phone",
                 onClick = onLoginWithPhone,
@@ -123,15 +126,14 @@ fun LoginOptionsScreen(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // 3. "Login with EduLocker ID" Link
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Login with EduLocker ID",
+                    text = "Login with UDYAP ID",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF374151),
+                    color = TextDark,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.5.sp,
                     modifier = Modifier.clickable { onLoginWithEduLockerId() }
@@ -201,28 +203,28 @@ fun AadhaarVerificationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
                 .padding(bottom = 36.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            // Dual Circle Logo
-            EduLockerDualDotsLogo(size = 54.dp)
+            EduLockerDualDotsLogo(size = 44.dp)
 
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(
-                text = "Verify your Aadhar Identity",
+                text = "Verify your Aadhaar Identity",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF334155),
+                color = TextDark,
                 fontSize = 21.sp
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "Verify your identity securely with Aadhaar to\naccess your EduLocker account",
+                text = "Verify your identity securely with Aadhaar to\naccess your UDYAP account",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF4B5563),
+                color = TextMuted,
                 fontSize = 13.5.sp,
                 lineHeight = 18.sp
             )
@@ -373,6 +375,7 @@ fun PinConfirmationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
                 .padding(bottom = 36.dp),
             horizontalAlignment = Alignment.Start
         ) {
@@ -494,32 +497,17 @@ fun PinConfirmationScreen(
 // Reusable Dual Dots Logo (Pink large dot + Magenta small dot on bottom right)
 // -----------------------------------------------------------
 @Composable
-fun EduLockerDualDotsLogo(size: Dp = 54.dp, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.size(size)
-    ) {
-        // Large pastel pink circle
-        Box(
-            modifier = Modifier
-                .size(size * 0.72f)
-                .align(Alignment.TopStart)
-                .clip(CircleShape)
-                .background(Color(0xFFFBCFE8))
-        )
-        // Small Odisha Magenta circle overlapping bottom-right
-        Box(
-            modifier = Modifier
-                .size(size * 0.44f)
-                .align(Alignment.BottomEnd)
-                .clip(CircleShape)
-                .background(Color(0xFFD81B60))
-        )
-    }
+fun EduLockerDualDotsLogo(size: Dp = 44.dp, modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.udyap_logo_full),
+        contentDescription = "UDYAP Logo",
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .height(size)
+            .width(size * 2.65f)
+    )
 }
 
-// -----------------------------------------------------------
-// Reusable Double-Border Pill Button (Outer black border + inner magenta pill)
-// -----------------------------------------------------------
 @Composable
 fun EduLockerPillButton(
     text: String,
@@ -529,16 +517,14 @@ fun EduLockerPillButton(
     Surface(
         modifier = modifier
             .clip(RoundedCornerShape(32.dp))
-            .border(1.4.dp, Color(0xFF1E293B), RoundedCornerShape(32.dp))
-            .padding(3.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(29.dp),
-        color = Color(0xFFD81B60)
+        shape = RoundedCornerShape(32.dp),
+        color = UdyapCrimson
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp),
+                .padding(vertical = 14.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(

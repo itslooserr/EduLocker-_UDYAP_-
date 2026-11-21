@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,22 +44,22 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier
 ) {
     val stepTitle = when (pageIndex) {
-        2 -> "Welcome to EduLocker" // 2.png
-        3 -> "" // 3.png (01 - description only)
-        4 -> "Everything You Need. One Platform." // 4.png (02)
-        5 -> "Your Journey. Your Digital Identity." // 5.png (03)
-        6 -> "Discover. Learn. Grow." // 6.png (04)
-        7 -> "Your Future. Connected." // 7.png (05)
+        2 -> "Welcome to UDYAP"
+        3 -> ""
+        4 -> "Everything You Need. One Platform."
+        5 -> "Your Journey. Your Digital Identity."
+        6 -> "Discover. Learn. Grow."
+        7 -> "Your Future. Connected."
         else -> ""
     }
 
     val stepDescription = when (pageIndex) {
-        2 -> "One platform to learn, grow, and\ndiscover opportunities." // 2.png
-        3 -> "EduLocker enables secure digital\naccess to verified documents,\nsubject to applicable laws and\nregulations." // 3.png
-        4 -> "EduLocker brings education,\nopportunities, career guidance,\nscholarships, and essential student\nservices together in one digital\necosystem." // 4.png
-        5 -> "Keep your academic journey,\nachievements, documents, and\nimportant student records organized\nin one secure place." // 5.png
-        6 -> "Find scholarships, competitions, career\nopportunities, educational updates, and\nresources that match your journey." // 6.png
-        7 -> "From learning and scholarships to careers,\nskills, and opportunities - EduLocker\nbrings the resources you need to move\nforward, all in one place." // 7.png
+        2 -> "One platform to learn, grow, and\ndiscover opportunities."
+        3 -> "UDYAP enables secure digital\naccess to verified documents,\nsubject to applicable laws and\nregulations."
+        4 -> "UDYAP brings education,\nopportunities, career guidance,\nscholarships, and essential student\nservices together in one digital\necosystem."
+        5 -> "Keep your academic journey,\nachievements, documents, and\nimportant student records organized\nin one secure place."
+        6 -> "Find scholarships, competitions, career\nopportunities, educational updates, and\nresources that match your journey."
+        7 -> "From learning and scholarships to careers,\nskills, and opportunities - UDYAP\nbrings the resources you need to move\nforward, all in one place."
         else -> ""
     }
 
@@ -110,7 +111,7 @@ fun OnboardingScreen(
                     )
                     close()
                 }
-                drawPath(arcPath, color = Color(0xFFD81B60))
+                drawPath(arcPath, color = Color(0xFFF21147))
             }
 
             // Overlapping Soft Pink Circle Badge (Exact Position & Styling)
@@ -171,7 +172,8 @@ fun OnboardingScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 22.dp, bottom = 44.dp)
+                .navigationBarsPadding()
+                .padding(end = 22.dp, bottom = 32.dp)
         ) {
             Surface(
                 modifier = Modifier
@@ -180,7 +182,7 @@ fun OnboardingScreen(
                     .padding(3.5.dp)
                     .clickable { onNext() },
                 shape = RoundedCornerShape(32.dp),
-                color = Color(0xFFD81B60)
+                color = Color(0xFFF21147)
             ) {
                 Box(
                     modifier = Modifier.padding(

@@ -21,8 +21,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -143,7 +145,7 @@ fun YouTubeVideoViewerModal(
                 userName = "Priyanka Sahoo (KIIT)",
                 userAvatar = "PS",
                 timeAgo = "5 hours ago",
-                commentText = "Very clear explanation! I received my Aadhaar DBT status verified within 10 minutes on EduLocker.",
+                commentText = "Very clear explanation! I received my Aadhaar DBT status verified within 10 minutes on UDYAP.",
                 likesCount = 142
             ),
             VideoComment(
@@ -232,6 +234,8 @@ fun YouTubeVideoViewerModal(
         modifier = Modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // -------------------------------------------------------------
@@ -391,8 +395,8 @@ fun YouTubeVideoViewerModal(
                         value = playbackProgress,
                         onValueChange = { playbackProgress = it },
                         colors = SliderDefaults.colors(
-                            thumbColor = Color(0xFFE11D48),
-                            activeTrackColor = Color(0xFFE11D48),
+                            thumbColor = Color(0xFFF21147),
+                            activeTrackColor = Color(0xFFF21147),
                             inactiveTrackColor = Color.White.copy(alpha = 0.35f)
                         ),
                         modifier = Modifier
@@ -510,7 +514,7 @@ fun YouTubeVideoViewerModal(
                                 Icon(
                                     imageVector = if (isLiked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
                                     contentDescription = "Like",
-                                    tint = if (isLiked) Color(0xFFE11D48) else Color(0xFF334155),
+                                    tint = if (isLiked) Color(0xFFF21147) else Color(0xFF334155),
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
@@ -848,7 +852,7 @@ fun YouTubeVideoViewerModal(
                                     comments.add(
                                         VideoComment(
                                             id = "c_${System.currentTimeMillis()}",
-                                            userName = "You (EduLocker Student)",
+                                            userName = "You (UDYAP Student)",
                                             userAvatar = "🧑‍🎓",
                                             timeAgo = "Just now",
                                             commentText = newCommentText,

@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -82,13 +84,15 @@ fun NotificationsScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 18.dp)
         ) {
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // 1. TOP HEADER with Back Button & Mark All Read
             Row(
@@ -146,7 +150,7 @@ fun NotificationsScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
                                 viewModel.sendTestPushNotification(
-                                    title = "🔔 Odisha EduLocker Alert",
+                                    title = "🔔 UDYAP Odisha Alert",
                                     body = "Live Push Notifications are active! You will receive alerts when scholarships, courses, or marks are updated."
                                 )
                                 Toast.makeText(context, "Live Push Notification sent!", Toast.LENGTH_SHORT).show()

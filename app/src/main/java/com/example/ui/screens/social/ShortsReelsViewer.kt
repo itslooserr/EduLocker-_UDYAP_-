@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -155,7 +157,8 @@ fun ShortsReelsViewerModal(
         IconButton(
             onClick = onDismiss,
             modifier = Modifier
-                .padding(start = 14.dp, top = 18.dp)
+                .statusBarsPadding()
+                .padding(start = 14.dp, top = 12.dp)
                 .align(Alignment.TopStart)
                 .size(38.dp)
                 .background(Color.Black.copy(alpha = 0.4f), CircleShape)
@@ -240,7 +243,7 @@ fun ShortsReelsViewerModal(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedTextColor = PureWhite,
                                 unfocusedTextColor = PureWhite,
-                                focusedBorderColor = Color(0xFFE11D48),
+                                focusedBorderColor = Color(0xFFF21147),
                                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                                 focusedContainerColor = Color(0xFF272727),
                                 unfocusedContainerColor = Color(0xFF272727)
@@ -265,7 +268,7 @@ fun ShortsReelsViewerModal(
                             },
                             modifier = Modifier
                                 .size(42.dp)
-                                .background(Color(0xFFE11D48), CircleShape)
+                                .background(Color(0xFFF21147), CircleShape)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Send,
@@ -379,7 +382,7 @@ private fun SingleShortReelPage(
                     color = Color.Black.copy(alpha = 0.4f)
                 ) {
                     Text(
-                        text = "⚡ EduShorts Reel",
+                        text = "⚡ UDYAP Creates",
                         color = PureWhite,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
@@ -399,7 +402,7 @@ private fun SingleShortReelPage(
             Icon(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = null,
-                tint = Color(0xFFE11D48),
+                tint = Color(0xFFF21147),
                 modifier = Modifier.size(110.dp)
             )
         }
@@ -444,7 +447,7 @@ private fun SingleShortReelPage(
                     Icon(
                         imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Like",
-                        tint = if (isLiked) Color(0xFFE11D48) else PureWhite,
+                        tint = if (isLiked) Color(0xFFF21147) else PureWhite,
                         modifier = Modifier.size(26.dp)
                     )
                 }
@@ -656,7 +659,7 @@ private fun SingleShortReelPage(
                 modifier = Modifier
                     .fillMaxWidth(playProgress.value)
                     .fillMaxHeight()
-                    .background(Color(0xFFE11D48))
+                    .background(Color(0xFFF21147))
             )
         }
     }

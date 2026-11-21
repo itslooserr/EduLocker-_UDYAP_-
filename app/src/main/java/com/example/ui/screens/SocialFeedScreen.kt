@@ -102,10 +102,18 @@ import com.example.ui.screens.social.WikipediaArticleViewerModal
 import com.example.ui.screens.social.WikipediaSection
 import com.example.ui.screens.social.YouTubeVideoData
 import com.example.ui.screens.social.YouTubeVideoViewerModal
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.ui.platform.testTag
 import com.example.ui.theme.CanvasCream
+import com.example.ui.theme.DarkBorder
+import com.example.ui.theme.NewsreaderFontFamily
 import com.example.ui.theme.OdishaMagenta
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.TextDark
+import com.example.ui.theme.TextMuted
+import com.example.ui.theme.UdyapCrimson
 import com.example.ui.viewmodel.EduLockerViewModel
 import com.example.util.NotificationHelper
 import kotlinx.coroutines.launch
@@ -169,8 +177,8 @@ fun SocialFeedScreen(
                 isGovtOfIndia = false,
                 hasCta = false,
                 title = "HP LIFE Certification Complete!",
-                body = "Cleared the Web Development Level 1 certification with top honors on EduLocker. Marksheet cryptographically anchored on Odisha Block-Locker!",
-                bgGradient = listOf(Color(0xFF831843), Color(0xFFE11D48), Color(0xFF1E1B4B)),
+                body = "Cleared the Web Development Level 1 certification with top honors on UDYAP. Marksheet cryptographically anchored on Odisha Block-Locker!",
+                bgGradient = listOf(Color(0xFF831843), Color(0xFFF21147), Color(0xFF1E1B4B)),
                 badgeLabel = "Student Achievement"
             ),
             StoryItem(
@@ -183,8 +191,8 @@ fun SocialFeedScreen(
                 hasCta = true,
                 ctaButtonLabel = "Apply Now",
                 title = "National Scholarship Portal 2026-27",
-                body = "Post-Matric & Merit-cum-Means applications are open for all Higher Secondary & College students. Fast-track Aadhaar DBT verification available inside EduLocker.",
-                bgGradient = listOf(Color(0xFF831843), Color(0xFFE11D48), Color(0xFF1E1B4B)),
+                body = "Post-Matric & Merit-cum-Means applications are open for all Higher Secondary & College students. Fast-track Aadhaar DBT verification available inside UDYAP.",
+                bgGradient = listOf(Color(0xFF831843), Color(0xFFF21147), Color(0xFF1E1B4B)),
                 badgeLabel = "OFFICIAL GAZETTE • GOVT. OF INDIA"
             ),
             StoryItem(
@@ -197,8 +205,8 @@ fun SocialFeedScreen(
                 hasCta = true,
                 ctaButtonLabel = "Download ID",
                 title = "APAAR Digital ID Card Release",
-                body = "All students from Class 9 to 12 can now generate and store their 12-digit APAAR Card with QR code verification in their EduLocker vault.",
-                bgGradient = listOf(Color(0xFF9D174D), Color(0xFFE11D48), Color(0xFF022C22)),
+                body = "All students from Class 9 to 12 can now generate and store their 12-digit APAAR Card with QR code verification in their UDYAP vault.",
+                bgGradient = listOf(Color(0xFF9D174D), Color(0xFFF21147), Color(0xFF022C22)),
                 badgeLabel = "CENTRAL BOARD NOTIFICATION"
             ),
             StoryItem(
@@ -226,7 +234,7 @@ fun SocialFeedScreen(
                 ctaButtonLabel = "View Schedule",
                 title = "JEE Main & NEET 2027 Portal Schedule",
                 body = "National Testing Agency releases information bulletins, chapter weightage, and computer-based mock papers for upcoming national entrances.",
-                bgGradient = listOf(Color(0xFF9F1239), Color(0xFFE11D48), Color(0xFF1E1B4B)),
+                bgGradient = listOf(Color(0xFF9F1239), Color(0xFFF21147), Color(0xFF1E1B4B)),
                 badgeLabel = "NATIONAL TESTING AGENCY"
             ),
             StoryItem(
@@ -267,8 +275,8 @@ fun SocialFeedScreen(
                 hasCta = true,
                 ctaButtonLabel = "Register Free",
                 title = "Pariksha Pe Charcha 2027",
-                body = "Join Hon'ble Prime Minister for exclusive masterclass on exam stress management and STEM innovation. Direct student entries open on EduLocker.",
-                bgGradient = listOf(Color(0xFF831843), Color(0xFFE11D48), Color(0xFF18181B)),
+                body = "Join Hon'ble Prime Minister for exclusive masterclass on exam stress management and STEM innovation. Direct student entries open on UDYAP.",
+                bgGradient = listOf(Color(0xFF831843), Color(0xFFF21147), Color(0xFF18181B)),
                 badgeLabel = "NATIONAL YOUTH INITIATIVE"
             )
         )
@@ -286,8 +294,8 @@ fun SocialFeedScreen(
                 views = "184K views",
                 uploadDate = "2 days ago",
                 durationText = "12:45",
-                description = "Complete step-by-step video guide on submitting Post-Matric and Merit-cum-Means applications through EduLocker with automated UIDAI authentication.",
-                tags = listOf("#OdishaScholarship", "#EduLocker", "#DBTIndia"),
+                description = "Complete step-by-step video guide on submitting Post-Matric and Merit-cum-Means applications through UDYAP with automated UIDAI authentication.",
+                tags = listOf("#OdishaScholarship", "#UDYAP", "#DBTIndia"),
                 gradientColors = listOf(Color(0xFF0284C7), Color(0xFF0369A1), Color(0xFF0F172A)),
                 iconEmoji = "🎓"
             ),
@@ -361,7 +369,7 @@ fun SocialFeedScreen(
                 initialLikes = 34200,
                 initialComments = 1240,
                 soundTrack = "Original Audio - Odisha Youth Hub",
-                hashtags = "#Scholarships #EduLocker #StudentHacks",
+                hashtags = "#Scholarships #UDYAP #StudentHacks",
                 bgGradient = listOf(Color(0xFF57534E), Color(0xFF292524), Color(0xFF1C1917)),
                 centralEmoji = "📜"
             ),
@@ -384,7 +392,7 @@ fun SocialFeedScreen(
                 creatorAvatar = "🎓",
                 initialLikes = 41900,
                 initialComments = 890,
-                soundTrack = "Tech Beat Synth - EduLocker",
+                soundTrack = "Tech Beat Synth - UDYAP",
                 hashtags = "#APAAR #DigitalIndia #AdmissionGuide",
                 bgGradient = listOf(Color(0xFF0284C7), Color(0xFF0369A1), Color(0xFF0C4A6E)),
                 centralEmoji = "🆔"
@@ -529,7 +537,7 @@ fun SocialFeedScreen(
                 initialLikes = 88500,
                 initialComments = 4690,
                 soundTrack = "Victory Theme Uplift",
-                hashtags = "#EduLocker #HigherEducation #MeritScholarship",
+                hashtags = "#UDYAP #HigherEducation #MeritScholarship",
                 bgGradient = listOf(Color(0xFF991B1B), Color(0xFF7F1D1D), Color(0xFF450A0A)),
                 centralEmoji = "🎯"
             ),
@@ -554,7 +562,7 @@ fun SocialFeedScreen(
             WikipediaArticleData(
                 id = "art_nsp",
                 title = "National Scholarship Portal",
-                subtitle = "From EduLocker Academic Encyclopedia, the verified educational repository",
+                subtitle = "From UDYAP Academic Encyclopedia, the verified educational repository",
                 lastModified = "26 September 2026",
                 readingTime = "4 min read",
                 infoboxData = mapOf(
@@ -575,9 +583,9 @@ fun SocialFeedScreen(
                         quote = "Ensuring fair, transparent, and prompt educational financial assistance directly into student bank accounts without bureaucratic leakage."
                     ),
                     WikipediaSection(
-                        title = "2. Integration with EduLocker & APAAR",
+                        title = "2. Integration with UDYAP & APAAR",
                         paragraphs = listOf(
-                            "Under the National Education Policy guidelines, NSP is natively integrated with EduLocker and the Automated Permanent Academic Account Registry (APAAR).",
+                            "Under the National Education Policy guidelines, NSP is natively integrated with UDYAP and the Automated Permanent Academic Account Registry (APAAR).",
                             "Students can authenticate their documents without submitting physical paper photocopies. Grade sheets, caste certificates, income credentials, and UIDAI e-KYC are verified instantaneously through cryptographic hashes."
                         )
                     ),
@@ -598,7 +606,7 @@ fun SocialFeedScreen(
             WikipediaArticleData(
                 id = "art_olympiad",
                 title = "State Science & Mathematics Olympiad (Odisha)",
-                subtitle = "From EduLocker Academic Encyclopedia, the verified educational repository",
+                subtitle = "From UDYAP Academic Encyclopedia, the verified educational repository",
                 lastModified = "24 September 2026",
                 readingTime = "5 min read",
                 infoboxData = mapOf(
@@ -619,7 +627,7 @@ fun SocialFeedScreen(
                     WikipediaSection(
                         title = "2. Examination Architecture & Evaluation",
                         paragraphs = listOf(
-                            "The competition is held across two distinct stages: Stage I consists of computer-adaptive multiple choice and numerical value questions hosted on the EduLocker Testing Engine.",
+                            "The competition is held across two distinct stages: Stage I consists of computer-adaptive multiple choice and numerical value questions hosted on the UDYAP Testing Engine.",
                             "Stage II candidates participate in hands-on physics and chemistry laboratory prototyping alongside advanced computational algorithm design challenges."
                         )
                     )
@@ -639,7 +647,7 @@ fun SocialFeedScreen(
                     "Initiative" to "One Nation One Student ID",
                     "Agency" to "Department of School Education & Literacy, MoE",
                     "Format" to "12-Digit Unique Alphanumeric ID",
-                    "Storage" to "DigiLocker & EduLocker Vault",
+                    "Storage" to "DigiLocker & UDYAP Vault",
                     "Use Cases" to "Admissions, Credit Transfers, Marksheet Validation"
                 ),
                 sections = listOf(
@@ -727,7 +735,7 @@ fun SocialFeedScreen(
                 chapter = "Differential & Integral Calculus (Chapters 5-9)",
                 pagesCount = "6 Pages PDF",
                 formulaCount = "42 Integrals & Rules",
-                bgGradient = listOf(Color(0xFF831843), Color(0xFFE11D48)),
+                bgGradient = listOf(Color(0xFF831843), Color(0xFFF21147)),
                 overview = "Comprehensive high-yield reference guide for limits, chain rule derivatives, standard indefinite integrals, definite integral properties, and differential equations.",
                 keyFormulas = listOf(
                     "Integration by Parts" to "∫ u v dx = u ∫ v dx - ∫ [u' (∫ v dx)] dx",
@@ -872,7 +880,7 @@ fun SocialFeedScreen(
                 keyBulletPoints = listOf(
                     "30% of total marks now allocated to application & competency-based questions.",
                     "Multiple-choice section enhanced to 20 marks with step-by-step automated evaluation.",
-                    "Sample answer sheets available directly inside EduLocker Vault for student download."
+                    "Sample answer sheets available directly inside UDYAP Vault for student download."
                 ),
                 examRelevance = "Essential for all Class 12 CHSE Board examinees for upcoming practical and theory exams.",
                 quizQuestion = GKQuizQuestion(
@@ -885,10 +893,10 @@ fun SocialFeedScreen(
             GKArticleItem(
                 id = "gk_3",
                 category = "DIGITAL INDIA",
-                title = "Over 1.2 Crore students complete APAAR digital ID binding across India on EduLocker",
+                title = "Over 1.2 Crore students complete APAAR digital ID binding across India on UDYAP",
                 date = "27 Sept 2026",
                 source = "Ministry of Education & MeitY",
-                summary = "The Automated Permanent Academic Account Registry (APAAR) reached a historic milestone with over 1.2 Crore students successfully generating their 12-digit verifiable digital ID linked to DigiLocker and EduLocker vaults.",
+                summary = "The Automated Permanent Academic Account Registry (APAAR) reached a historic milestone with over 1.2 Crore students successfully generating their 12-digit verifiable digital ID linked to DigiLocker and UDYAP vaults.",
                 keyBulletPoints = listOf(
                     "APAAR serves as 'One Nation, One Student ID' across school and university levels.",
                     "Automates scholarship verification and credit accumulation under National Credit Framework (NCrF).",
@@ -1114,39 +1122,384 @@ fun SocialFeedScreen(
         viewModel.setStoryOpen(isAnyViewerOpen)
     }
 
+    var socialSearchQuery by remember { mutableStateOf("") }
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(CanvasCream)
+            .background(PureWhite)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
+                .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 18.dp)
         ) {
-            // Safe Top Spacing
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // 1. TITLE: "Social" (Exact from 35.png)
-            Text(
-                text = "Social",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF111827),
-                fontSize = 24.sp
+            // 1. TOP PILL SEARCH BAR + FILTER ICON (Exact from 13_764da36f.png)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(46.dp)
+                        .clip(RoundedCornerShape(50.dp))
+                        .border(1.1.dp, DarkBorder, RoundedCornerShape(50.dp))
+                        .background(PureWhite)
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            if (socialSearchQuery.isEmpty()) {
+                                Text(
+                                    text = "Search Exclusive Contents..",
+                                    color = Color(0xFF7B7B7B),
+                                    fontSize = 13.sp,
+                                    maxLines = 1
+                                )
+                            }
+                            BasicTextField(
+                                value = socialSearchQuery,
+                                onValueChange = { socialSearchQuery = it },
+                                singleLine = true,
+                                cursorBrush = SolidColor(UdyapCrimson),
+                                textStyle = TextStyle(color = TextDark, fontSize = 13.5.sp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("social_search_input")
+                            )
+                        }
+                        if (socialSearchQuery.isNotEmpty()) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Clear",
+                                tint = TextDark,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable { socialSearchQuery = "" }
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "Search",
+                                tint = Color(0xFF333333),
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable { showAllVideosGallery = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    StaggeredFilterIcon(tint = Color(0xFF2B2B2B))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 2. FEATURED HERO VIDEO CARD (Exact from 13_764da36f.png)
+            val heroVideo = xstreamVideos.first()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { selectedVideo = heroVideo }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(196.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(Color(0xFF8C97A4), Color(0xFF6B7785), Color(0xFF475569))
+                            )
+                        )
+                ) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        drawCircle(
+                            color = UdyapCrimson.copy(alpha = 0.22f),
+                            radius = size.width * 0.35f,
+                            center = Offset(size.width * 0.85f, size.height * 0.2f)
+                        )
+                        drawCircle(
+                            color = PureWhite.copy(alpha = 0.12f),
+                            radius = size.width * 0.28f,
+                            center = Offset(size.width * 0.18f, size.height * 0.82f)
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(18.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = UdyapCrimson
+                        ) {
+                            Text(
+                                text = "UDYAP FEATURED",
+                                color = PureWhite,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp)
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Discover Smart Vault, Disha AI & Live Scholarships",
+                                    color = PureWhite,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 17.sp,
+                                    lineHeight = 22.sp
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "184K views • 12:45",
+                                    color = PureWhite.copy(alpha = 0.82f),
+                                    fontSize = 11.5.sp
+                                )
+                            }
+                            Text(text = "🚀", fontSize = 36.sp)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "UDYAP's best features, You must have to check..",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = TextDark,
+                    fontSize = 17.5.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Sunil Goda",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMuted,
+                    fontSize = 13.5.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            // 3. "Creates" VERTICAL SHORTS SECTION (Exact from 13_764da36f.png)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Creates",
+                    fontFamily = NewsreaderFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    color = TextDark,
+                    fontSize = 23.sp
+                )
+                Text(
+                    text = "more",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMuted,
+                    fontSize = 13.5.sp,
+                    modifier = Modifier.clickable { showAllShortsGallery = true }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            val createTitles = listOf(
+                "5 Websites you have to visit ..",
+                "Best features in UDYAP App..",
+                "How to start your own startup..",
+                "Best 5 startup outlet ideas",
+                "Smart Board Revision Hacks..",
+                "Free Govt Tech Courses 2026"
+            )
+            val createGradients = listOf(
+                listOf(Color(0xFF44392F), Color(0xFF1F1915)),
+                listOf(Color(0xFF283747), Color(0xFF0E141B)),
+                listOf(Color(0xFF6DD5ED), Color(0xFF39A7C9)),
+                listOf(Color(0xFFB85419), Color(0xFF3D1C08)),
+                listOf(Color(0xFF831843), Color(0xFF3B0764)),
+                listOf(Color(0xFF0F766E), Color(0xFF115E59))
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                items(shortsList.take(6).size) { index ->
+                    val shortItem = shortsList[index]
+                    Box(
+                        modifier = Modifier
+                            .width(114.dp)
+                            .height(174.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Brush.verticalGradient(createGradients[index % createGradients.size]))
+                            .clickable { selectedShortsIndex = index }
+                            .padding(10.dp)
+                    ) {
+                        Text(
+                            text = createTitles[index % createTitles.size],
+                            color = PureWhite,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            lineHeight = 15.5.sp,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.align(Alignment.TopStart)
+                        )
+                        Text(
+                            text = shortItem.centralEmoji,
+                            fontSize = 36.sp,
+                            modifier = Modifier.align(Alignment.BottomEnd)
+                        )
+                    }
+                }
+            }
 
-            // 2. STORY / CHANNELS ROW (8 Stories with Unified App Theme Pink Rings)
-            // Clicks -> Opens Instagram-style Story Viewer
+            Spacer(modifier = Modifier.height(22.dp))
+
+            // 4. "Contents" HORIZONTAL VIDEO SECTION (Exact from 13_764da36f.png)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Contents",
+                    fontFamily = NewsreaderFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    color = TextDark,
+                    fontSize = 23.sp
+                )
+                Text(
+                    text = "more",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMuted,
+                    fontSize = 13.5.sp,
+                    modifier = Modifier.clickable { showAllVideosGallery = true }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            val contentMeta = listOf(
+                "UDYAP's best features, h.." to "Sir Nikhil Yadav",
+                "Startup ideas to execute" to "StartUp Guru",
+                "How to grow faster" to "Business Time",
+                "Scholarship DBT Guide" to "Odisha Edu Desk",
+                "Board Exam Blueprint" to "Toppers Academy"
+            )
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(xstreamVideos.size) { index ->
+                    val vid = xstreamVideos[index]
+                    val (shortTitle, creator) = contentMeta[index % contentMeta.size]
+                    Column(
+                        modifier = Modifier
+                            .width(166.dp)
+                            .clickable { selectedVideo = vid }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(98.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Brush.linearGradient(vid.gradientColors))
+                                .padding(10.dp)
+                        ) {
+                            Text(
+                                text = vid.iconEmoji,
+                                fontSize = 30.sp,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                            Surface(
+                                shape = RoundedCornerShape(4.dp),
+                                color = Color(0xAA000000),
+                                modifier = Modifier.align(Alignment.BottomEnd)
+                            ) {
+                                Text(
+                                    text = vid.durationText,
+                                    color = PureWhite,
+                                    fontSize = 9.5.sp,
+                                    modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = shortTitle,
+                            color = TextDark,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = creator,
+                            color = TextMuted,
+                            fontSize = 11.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 5. OFFICIAL GOVT & STUDENT STORIES (Unified #F21147 Ring Borders)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Official Updates",
+                    fontFamily = NewsreaderFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    color = TextDark,
+                    fontSize = 21.sp
+                )
+                Text(
+                    text = "more",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextMuted,
+                    fontSize = 13.5.sp,
+                    modifier = Modifier.clickable { showAllStoriesGallery = true }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // All 8 official stories with unified pink theme gradient ring
                 items(allStories.size) { index ->
                     val story = allStories[index]
                     StoryCircleItem(
@@ -1165,168 +1518,11 @@ fun SocialFeedScreen(
                         selectedStoryIndex = index
                     }
                 }
-
-                // 9th Item: More Story button -> Opens Full Stories Gallery
-                item {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .clickable { showAllStoriesGallery = true }
-                            .padding(end = 4.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(62.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFFF1F5F9))
-                                .border(1.5.dp, Color(0xFFCBD5E1), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = "More",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = "More",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF64748B),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 3. "India Xstream" SECTION (Exact from 35.png)
-            // Clicks -> Opens YouTube-style Video Player View; "more" -> Opens Full Video List
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "India Xstream",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF111827),
-                    fontSize = 18.sp
-                )
-                Text(
-                    text = "more",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B),
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {
-                        showAllVideosGallery = true
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Horizontal Scroll of YouTube Video Content Cards (Clean without play icon)
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                items(xstreamVideos.size) { index ->
-                    val vid = xstreamVideos[index]
-                    val tag = when (index) {
-                        0 -> "SCHOLARSHIP"
-                        1 -> "PARLIAMENT"
-                        2 -> "OLYMPIAD"
-                        3 -> "ROBOTICS"
-                        else -> "MATH"
-                    }
-                    XstreamNewsCard(
-                        title = vid.title,
-                        source = vid.channelName,
-                        bgGradient = vid.gradientColors,
-                        emoji = vid.iconEmoji,
-                        duration = vid.durationText,
-                        tag = tag
-                    ) {
-                        selectedVideo = vid
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 4. "Quick Nation by EduCreators" SECTION (Exact from 35.png)
-            // Clicks -> Opens Fullscreen Vertical Shorts / Reels Viewer
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = "Quick Nation",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF111827),
-                        fontSize = 18.sp
-                    )
-                    Text(
-                        text = "by EduCreators",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF64748B),
-                        fontSize = 13.sp
-                    )
-                }
-
-                Text(
-                    text = "more",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF64748B),
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {
-                        showAllShortsGallery = true
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 4 Tall Vertical Video Cards (9:16 Aspect Ratio) -> Shorts (Clean without play icon)
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(shortsList.take(6).size) { index ->
-                    val shortItem = shortsList[index]
-                    val views = when (index) {
-                        0 -> "34.2K"
-                        1 -> "52.8K"
-                        2 -> "41.9K"
-                        3 -> "68.4K"
-                        4 -> "38.9K"
-                        else -> "81.2K"
-                    }
-                    QuickNationVideoCard(
-                        bgColor = shortItem.bgGradient.first(),
-                        caption = shortItem.title,
-                        emoji = shortItem.centralEmoji,
-                        views = views
-                    ) {
-                        selectedShortsIndex = index
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 5. "Articles" SECTION (Exact from 35.png)
+            // 6. "Articles" SECTION
             // Clicks -> Opens Wikipedia-style Academic Reader View; "more" -> Opens Full Directory
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -2565,7 +2761,7 @@ private fun FullShortsDirectoryDialog(
 
                     Text(
                         text = "${shorts.size} Reels",
-                        color = Color(0xFFE11D48),
+                        color = Color(0xFFF21147),
                         fontSize = 12.5.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -2731,7 +2927,7 @@ fun InstagramStoryViewer(
                 currentStory.badgeLabel?.let { badge ->
                     Surface(
                         shape = RoundedCornerShape(8.dp),
-                        color = if (currentStory.isGovtOfIndia) Color(0xFFD81B60) else Color(0x33FFFFFF)
+                        color = if (currentStory.isGovtOfIndia) Color(0xFFF21147) else Color(0x33FFFFFF)
                     ) {
                         Text(
                             text = badge,
@@ -2770,7 +2966,8 @@ fun InstagramStoryViewer(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp)
+                .statusBarsPadding()
+                .padding(top = 12.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -2921,7 +3118,8 @@ fun InstagramStoryViewer(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 18.dp)
         ) {
             if (currentStory.hasCta) {
                 Column(
@@ -3054,7 +3252,7 @@ fun InstagramStoryViewer(
 @Composable
 private fun StoryCircleItem(
     label: String,
-    gradientColors: List<Color> = listOf(Color(0xFFE11D48), Color(0xFFFB7185)),
+    gradientColors: List<Color> = listOf(Color(0xFFF21147), Color(0xFFFB7185)),
     avatarInitial: String,
     onClick: () -> Unit
 ) {

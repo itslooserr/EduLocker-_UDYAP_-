@@ -6,27 +6,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val EduLockerColorScheme = lightColorScheme(
-    primary = OdishaMagenta,
+val UdyapInk = TextDark
+
+private val UdyapColorScheme = lightColorScheme(
+    primary = UdyapCrimson,
     onPrimary = PureWhite,
-    primaryContainer = SoftBlushPink,
-    onPrimaryContainer = OdishaMagentaDark,
-    secondary = OdishaMagentaDark,
+    primaryContainer = UdyapBlush,
+    onPrimaryContainer = UdyapCrimsonDark,
+    secondary = UdyapCrimsonDark,
     onSecondary = PureWhite,
-    secondaryContainer = LightBlushPink,
-    onSecondaryContainer = OdishaMagentaDeep,
-    tertiary = OdishaMagentaDeep,
-    background = CanvasCream,
+    secondaryContainer = UdyapPeachSoft,
+    onSecondaryContainer = UdyapInk,
+    tertiary = UdyapIndigoCta,
+    background = PureWhite,
     onBackground = TextDark,
     surface = PureWhite,
     onSurface = TextDark,
-    surfaceVariant = SoftBlushPink,
-    onSurfaceVariant = TextDark,
-    outline = DarkBorder
+    surfaceVariant = UdyapPeachSoft,
+    onSurfaceVariant = TextMuted,
+    outline = HairlineDivider
 )
 
 @Composable
@@ -39,16 +42,17 @@ fun MyApplicationTheme(
         SideEffect {
             val window = (view.context as? Activity)?.window
             if (window != null) {
-                window.statusBarColor = CanvasCream.toArgb()
-                window.navigationBarColor = CanvasCream.toArgb()
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
-                WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
+                window.statusBarColor = Color.Transparent.toArgb()
+                window.navigationBarColor = PureWhite.toArgb()
+                val controller = WindowCompat.getInsetsController(window, view)
+                controller.isAppearanceLightStatusBars = true
+                controller.isAppearanceLightNavigationBars = true
             }
         }
     }
 
     MaterialTheme(
-        colorScheme = EduLockerColorScheme,
+        colorScheme = UdyapColorScheme,
         typography = Typography,
         content = content
     )

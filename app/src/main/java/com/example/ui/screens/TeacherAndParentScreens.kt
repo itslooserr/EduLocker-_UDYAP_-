@@ -921,7 +921,7 @@ fun ParentAvatarCanvas(modifier: Modifier = Modifier) {
             cubicTo(w * 0.25f, h * 0.68f, w * 0.75f, h * 0.68f, w * 0.85f, h)
             close()
         }
-        drawPath(shirt, color = Color(0xFFE11D48))
+        drawPath(shirt, color = Color(0xFFF21147))
     }
 }
 
@@ -1043,9 +1043,9 @@ private fun AssetChooserDialog(
                         modifier = Modifier.fillMaxWidth().height(44.dp),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFE11D48), modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFF21147), modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Remove Custom Image", color = Color(0xFFE11D48), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text("Remove Custom Image", color = Color(0xFFF21147), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     }
                 }
 

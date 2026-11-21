@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -134,13 +136,15 @@ fun MessagesScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 18.dp)
         ) {
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // 1. TOP HEADER with Back Button & Title
             Row(
@@ -451,7 +455,7 @@ fun MessagesScreen(
                                         color = TextDark
                                     )
                                     Text(
-                                        text = "Online • EduLocker Network",
+                                        text = "Online • UDYAP Network",
                                         fontSize = 11.sp,
                                         color = Color(0xFF16A34A)
                                     )

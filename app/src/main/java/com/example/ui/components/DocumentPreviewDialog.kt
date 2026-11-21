@@ -143,7 +143,7 @@ fun DocumentViewerDialog(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Text(
-                                        text = "EduLocker Digital Vault",
+                                        text = "UDYAP Digital Vault",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = TextDark,

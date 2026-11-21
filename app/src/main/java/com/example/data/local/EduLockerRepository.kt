@@ -376,7 +376,7 @@ class EduLockerRepository(private val database: EduLockerDatabase) {
                 timeAgo = "2d ago"
             ),
             NotificationItemEntity(
-                title = "Marksheet Issued to EduLocker",
+                title = "Marksheet Issued to UDYAP",
                 description = "Council of Higher Secondary Education (CHSE) uploaded your verified marksheet.",
                 category = "Document",
                 timeAgo = "3d ago"
@@ -412,7 +412,7 @@ class EduLockerRepository(private val database: EduLockerDatabase) {
                     author = "Department of School & Mass Education",
                     handle = "Govt. of Odisha • Official",
                     timeAgo = "3hr ago",
-                    content = "Odisha State Post-Matric Scholarship portal is now live for 2026-27 session. Eligible Class 11 and 12 students are advised to submit eKYC via EduLocker before 31st October.",
+                    content = "Odisha State Post-Matric Scholarship portal is now live for 2026-27 session. Eligible Class 11 and 12 students are advised to submit eKYC via UDYAP before 31st October.",
                     likesCount = 1420,
                     isLiked = false,
                     imageResId = "scholarship_banner"
@@ -422,7 +422,7 @@ class EduLockerRepository(private val database: EduLockerDatabase) {
                     author = "HP LIFE Global",
                     handle = "Skill & Innovation Partner",
                     timeAgo = "6hr ago",
-                    content = "Congratulations to all Odisha students who cleared the Web Development Certification Level 1 on EduLocker! Keep building practical skills.",
+                    content = "Congratulations to all Odisha students who cleared the Web Development Certification Level 1 on UDYAP! Keep building practical skills.",
                     likesCount = 890,
                     isLiked = true,
                     imageResId = "code_mastery"

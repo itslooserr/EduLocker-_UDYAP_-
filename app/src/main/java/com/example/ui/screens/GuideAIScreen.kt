@@ -97,6 +97,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.filled.School
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -107,10 +111,21 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.ui.theme.CanvasCream
 import com.example.ui.theme.DarkBorder
+import com.example.ui.theme.NewsreaderFontFamily
 import com.example.ui.theme.OdishaMagenta
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.SoftBlushPink
 import com.example.ui.theme.TextDark
+import com.example.ui.theme.TextMuted
+import com.example.ui.theme.UdyapAquaCard
+import com.example.ui.theme.UdyapCrimson
+import com.example.ui.theme.UdyapDishaBubble
+import com.example.ui.theme.UdyapMintGreen
+import com.example.ui.theme.UdyapPeach
+import com.example.ui.theme.UdyapPinkCard
+import com.example.ui.theme.UdyapSkyCard
+import com.example.ui.theme.UdyapStackPink
+import com.example.ui.theme.UdyapYellowCard
 import com.example.ui.viewmodel.EduLockerViewModel
 import com.example.ui.viewmodel.RecommendationItem
 import com.example.util.TextToSpeechHelper
@@ -156,287 +171,332 @@ fun GuideAIScreen(
     val isFullScreenChatOpen by viewModel.isAiChatOpen.collectAsState()
     var activeNetworkType by remember { mutableStateOf<String?>(null) }
     var activeArticleItem by remember { mutableStateOf<EditorialArticleItem?>(null) }
+    var showQuizBanner by remember { mutableStateOf(true) }
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(CanvasCream)
+            .background(PureWhite)
     ) {
-        // =================================================================
-        // MAIN GUIDE SCREEN VIEW (34.png + Image 2 Cards)
-        // =================================================================
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
         ) {
-            // 1. TOP MAGENTA ARCH DOME (Exact Symmetrical Curve from 34.png)
-            Box(
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 1. CLEAN HEADER: Ai Smart Think / Your Networks (Exact from 12_1654c8b5.png)
+            Text(
+                text = "Ai Smart Think",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = TextDark,
+                fontSize = 21.sp
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "Your Networks",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextMuted,
+                fontSize = 13.5.sp
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // 2. 2x3 GRID OF SOFT PEACH PILL BUTTONS (Exact from 12_1654c8b5.png)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                NetworkPillButton("My Learning", Modifier.weight(1f)) { activeNetworkType = "My Learning" }
+                NetworkPillButton("MY Applications", Modifier.weight(1f)) { activeNetworkType = "MY Applications" }
+            }
+            Spacer(modifier = Modifier.height(11.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                NetworkPillButton("Internships", Modifier.weight(1f)) { activeNetworkType = "Internships" }
+                NetworkPillButton("Job Eligibility", Modifier.weight(1f)) { activeNetworkType = "Job Eligibility" }
+            }
+            Spacer(modifier = Modifier.height(11.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                NetworkPillButton("Recognition", Modifier.weight(1f)) { activeNetworkType = "Recognition" }
+                NetworkPillButton("+  More", Modifier.weight(1f)) { activeNetworkType = "More Opportunities" }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 3. ✨ Recommended for You (Exact pastel card layout from 12_1654c8b5.png)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(text = "✨", fontSize = 19.sp)
+                Text(
+                    text = "Recommended for You",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Normal,
+                    color = TextDark,
+                    fontSize = 20.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Row 1: Horizontal Pastel Trio (Mint, Cream Yellow, Sky Blue)
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(96.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    val w = size.width
-                    val h = size.height
-
-                    val domePath = Path().apply {
-                        moveTo(-w * 0.35f, 0f)
-                        quadraticBezierTo(
-                            w * 0.5f, h * 2.2f,
-                            w * 1.35f, 0f
-                        )
-                        close()
-                    }
-                    drawPath(domePath, color = Color(0xFFD81B60))
+                DishaPastelCard(
+                    title = "Learning",
+                    subtitle = "era of learn to grow",
+                    backgroundColor = Color(0xFFCEFBCE),
+                    modifier = Modifier.width(120.dp)
+                ) {
+                    viewModel.allRecommendations.getOrNull(0)?.let { viewModel.selectRecommendation(it) }
+                }
+                DishaPastelCard(
+                    title = "Best for you",
+                    subtitle = "Lets have a look on whats best for you today to do..",
+                    backgroundColor = UdyapYellowCard,
+                    modifier = Modifier.width(196.dp)
+                ) {
+                    viewModel.allRecommendations.getOrNull(1)?.let { viewModel.selectRecommendation(it) }
+                }
+                DishaPastelCard(
+                    title = "Best thing",
+                    subtitle = "The best thing not to do",
+                    backgroundColor = UdyapSkyCard,
+                    modifier = Modifier.width(136.dp)
+                ) {
+                    viewModel.allRecommendations.getOrNull(2)?.let { viewModel.selectRecommendation(it) }
                 }
             }
 
-            // 2. MAIN BODY CONTENT (34.png + Professional Cards)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Row 2: Two Equal-Width Pastel Cards (Soft Pink + Aqua Mint)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Spacer(modifier = Modifier.height(6.dp))
+                DishaPastelCard(
+                    title = "Right path selector",
+                    subtitle = "Explore the new fields that are live now. lets see and analyz..",
+                    backgroundColor = UdyapPinkCard,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    viewModel.allRecommendations.getOrNull(3)?.let { viewModel.selectRecommendation(it) }
+                }
+                DishaPastelCard(
+                    title = "Out of brain Quest",
+                    subtitle = "Experience the new level of competition. learn more",
+                    backgroundColor = UdyapAquaCard,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    viewModel.allRecommendations.getOrNull(4)?.let { viewModel.selectRecommendation(it) }
+                }
+            }
 
-                // Header: Ai Smart Think / Your Networks
-                Text(
-                    text = "Ai Smart Think",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF334155),
-                    fontSize = 21.sp
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // 4. DISCLAIMER: Graduation Cap + "Disha can make mistakes."
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.School,
+                    contentDescription = null,
+                    tint = Color(0xFF7B7B7B),
+                    modifier = Modifier.size(16.dp)
                 )
                 Text(
-                    text = "Your Networks & Opportunities",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF64748B),
-                    fontSize = 14.sp
+                    text = "Disha can make mistakes.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextMuted,
+                    fontSize = 12.sp
                 )
+            }
 
-                Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-                // 6 Pink Pill Buttons (2 columns x 3 rows - Exact from 34.png)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    NetworkPillButton(
-                        text = "My Learning",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "My Learning" }
-                    )
-                    NetworkPillButton(
-                        text = "MY Applications",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "MY Applications" }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    NetworkPillButton(
-                        text = "Internships",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "Internships" }
-                    )
-                    NetworkPillButton(
-                        text = "Job Eligibility",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "Job Eligibility" }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    NetworkPillButton(
-                        text = "Recognition",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "Recognition" }
-                    )
-                    NetworkPillButton(
-                        text = "+ More",
-                        modifier = Modifier.weight(1f),
-                        onClick = { activeNetworkType = "More Opportunities" }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                // ✨ Recommended for You Section Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(text = "✨", fontSize = 20.sp)
-                        Text(
-                            text = "Recommended for You",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF334155),
-                            fontSize = 20.sp
-                        )
-                    }
-
-                    Text(
-                        text = "Explore All",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = OdishaMagenta,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                viewModel.selectRecommendation(viewModel.allRecommendations.first())
-                            }
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // ✨ Side-to-Side Dual Smooth Motion Carousel (Two Lines: One moving Left, One moving Right)
-                RecommendedDualMovingCarousel(
-                    row1Items = viewModel.recommendationsRow1,
-                    row2Items = viewModel.recommendationsRow2,
-                    onItemClick = { item ->
-                        viewModel.selectRecommendation(item)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                // Black Speech Bubble (Exact from 34.png)
+            // 5. STACKED MINT-GREEN QUIZ PROMPT CARD (Pink peeking below - Exact from 12_1654c8b5.png)
+            if (showQuizBanner) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .clickable { viewModel.setAiChatOpen(true) }
+                        .padding(horizontal = 4.dp, vertical = 4.dp)
                 ) {
-                    Column {
-                        Surface(
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp)
+                            .height(22.dp)
+                            .align(Alignment.BottomCenter)
+                            .offset(y = 7.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(UdyapStackPink)
+                    )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .clickable {
+                                viewModel.askRunwayAi("Start a quick 3-question interactive science & aptitude quiz for me!")
+                                viewModel.setAiChatOpen(true)
+                            },
+                        shape = RoundedCornerShape(16.dp),
+                        color = UdyapMintGreen
+                    ) {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(16.dp)),
-                            shape = RoundedCornerShape(16.dp),
-                            color = Color(0xFF171717)
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Any question? Let's explore it together.",
-                                color = PureWhite,
+                                text = "Hiee buddy! How's your day going ??\nLets try a QUIZ",
                                 style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF283629),
                                 fontSize = 13.5.sp,
-                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
-                                textAlign = TextAlign.Center
+                                lineHeight = 19.sp,
+                                modifier = Modifier.weight(1f)
                             )
-                        }
-
-                        // Speech bubble downward triangle pointer
-                        Canvas(
-                            modifier = Modifier
-                                .padding(start = 28.dp)
-                                .size(16.dp, 10.dp)
-                        ) {
-                            val pointerPath = Path().apply {
-                                moveTo(0f, 0f)
-                                lineTo(size.width, 0f)
-                                lineTo(size.width / 2f, size.height)
-                                close()
-                            }
-                            drawPath(pointerPath, color = Color(0xFF171717))
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Dismiss quiz card",
+                                tint = Color(0xFF3E4C3F),
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .clickable { showQuizBanner = false }
+                            )
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(4.dp))
             }
 
-            // 3. BOTTOM RUNWAY SECTION (Curved pink container - Exact from 34.png)
+            Spacer(modifier = Modifier.height(34.dp))
+
+            // 6. FLOATING DARK SPEECH BUBBLE (Exact from 12_1654c8b5.png)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp))
-                    .background(Color(0xFFFCE7F3))
-                    .padding(horizontal = 22.dp, vertical = 18.dp)
+                    .padding(horizontal = 18.dp)
+                    .testTag("disha_speech_bubble")
+                    .clickable { viewModel.setAiChatOpen(true) }
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Left: Runway Head / Brain Profile Icon & Title
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                Column {
+                    Surface(
                         modifier = Modifier
-                            .weight(1f)
-                            .clickable { viewModel.setAiChatOpen(true) }
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp)),
+                        shape = RoundedCornerShape(16.dp),
+                        color = UdyapDishaBubble
                     ) {
-                        RunwayHeadIcon(modifier = Modifier.size(54.dp))
-
-                        Column {
-                            Text(
-                                text = "Runway",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = Color(0xFF1E293B),
-                                fontSize = 17.sp
-                            )
-                            Text(
-                                text = "Analyzing your session..",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF64748B),
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-
-                    // Right: Black Ask Square Button with Paper Plane Icon (34.png)
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable { viewModel.setAiChatOpen(true) }
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFF171717)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Send,
-                                contentDescription = "Ask Runway",
-                                tint = PureWhite,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Ask",
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B),
-                            fontSize = 11.sp
+                            text = "Any question? Let's explore it together.",
+                            color = PureWhite,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                            textAlign = TextAlign.Center
                         )
+                    }
+                    Canvas(
+                        modifier = Modifier
+                            .padding(start = 26.dp)
+                            .size(18.dp, 12.dp)
+                    ) {
+                        val pointerPath = Path().apply {
+                            moveTo(0f, 0f)
+                            lineTo(size.width, 0f)
+                            lineTo(0f, size.height)
+                            close()
+                        }
+                        drawPath(pointerPath, color = UdyapDishaBubble)
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(84.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 7. DISHA ASSISTANT BAR (Clean directly on pure white canvas - Exact from 12_1654c8b5.png)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { viewModel.setAiChatOpen(true) }
+                ) {
+                    RunwayHeadIcon(modifier = Modifier.size(56.dp))
+                    Column {
+                        Text(
+                            text = "Disha",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = TextDark,
+                            fontSize = 18.sp
+                        )
+                        Text(
+                            text = "Analyzing your session..",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextMuted,
+                            fontSize = 12.5.sp
+                        )
+                    }
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .testTag("disha_ask_button")
+                        .clickable { viewModel.setAiChatOpen(true) }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFF000000)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Ask Disha",
+                            tint = PureWhite,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Ask",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextDark,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(22.dp))
         }
 
         // =================================================================
@@ -523,7 +583,7 @@ fun FullScreenAiChatPage(
         }
     }
 
-    val models = listOf("Quantum 3", "EduLocker Pro 4.0", "State Career Advisor")
+    val models = listOf("Disha 3.0", "UDYAP Pro 4.0", "State Career Advisor")
 
     // Auto-scroll on new message
     LaunchedEffect(messages.size, isThinking) {
@@ -535,14 +595,12 @@ fun FullScreenAiChatPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CanvasCream)
+            .background(PureWhite)
+            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // -------------------------------------------------------------
-            // TOP APP BAR: [Menu/Back] [Free plan • Upgrade] [Assistant Bot]
-            // -------------------------------------------------------------
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -550,14 +608,13 @@ fun FullScreenAiChatPage(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Back Button
                 IconButton(
                     onClick = onClose,
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(PureWhite)
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -567,41 +624,39 @@ fun FullScreenAiChatPage(
                     )
                 }
 
-                // Center AI Assistant Header Badge
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(10.dp)
+                            .size(9.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF10B981))
+                            .background(Color(0xFF00B843))
                     )
                     Text(
-                        text = "Runway AI Advisor",
+                        text = "Disha AI Advisor",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0F172A),
+                        color = TextDark,
                         fontSize = 16.sp
                     )
                 }
 
-                // Right Assistant Icon / Bot Avatar (image.png)
                 IconButton(
                     onClick = {
-                        Toast.makeText(context, "EduLocker AI Model: $selectedModel", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "UDYAP Disha Model: $selectedModel", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(PureWhite)
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
                 ) {
                     Icon(
                         imageVector = Icons.Filled.SmartToy,
-                        contentDescription = "AI Agent",
-                        tint = Color(0xFF1E293B),
+                        contentDescription = "Disha AI",
+                        tint = TextDark,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -767,7 +822,7 @@ fun FullScreenAiChatPage(
                                 strokeWidth = 2.dp
                             )
                             Text(
-                                text = "Runway AI is thinking...",
+                                text = "Disha AI is thinking...",
                                 color = Color(0xFF64748B),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium
@@ -945,7 +1000,7 @@ fun FullScreenAiChatPage(
                                                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                                                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
                                             )
-                                            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to Runway AI...")
+                                            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to Disha AI...")
                                         }
                                         try {
                                             speechRecognizerLauncher.launch(intent)
@@ -1976,7 +2031,7 @@ fun OpportunityDirectoryModal(
 
                 // Bottom Ask Runway Assistant Button
                 Button(
-                    onClick = { onAskRunway("Recommend the best jobs and internships based on my EduLocker profile") },
+                    onClick = { onAskRunway("Recommend the best jobs and internships based on my UDYAP profile") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -1985,7 +2040,7 @@ fun OpportunityDirectoryModal(
                 ) {
                     Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = PureWhite, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Ask Runway AI for Personalized Matches", color = PureWhite, fontWeight = FontWeight.Bold, fontSize = 13.5.sp)
+                    Text("Ask Disha AI for Personalized Matches", color = PureWhite, fontWeight = FontWeight.Bold, fontSize = 13.5.sp)
                 }
             }
         }
@@ -2070,7 +2125,7 @@ fun ArticleReaderModal(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = "EduLocker Editorial • ${article.readTime}",
+                        text = "UDYAP Editorial • ${article.readTime}",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF94A3B8),
                         fontSize = 12.sp
@@ -2156,7 +2211,7 @@ fun ArticleReaderModal(
                 ) {
                     Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = PureWhite, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Deep Dive with Runway AI", color = PureWhite, fontWeight = FontWeight.Bold, fontSize = 13.5.sp)
+                    Text("Deep Dive with Disha AI", color = PureWhite, fontWeight = FontWeight.Bold, fontSize = 13.5.sp)
                 }
             }
         }
@@ -2174,11 +2229,11 @@ private fun NetworkPillButton(
 ) {
     Surface(
         modifier = modifier
-            .height(46.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .height(44.dp)
+            .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() },
-        shape = RoundedCornerShape(14.dp),
-        color = Color(0xFFFDE8E8) // Exact soft pink from 34.png
+        shape = RoundedCornerShape(12.dp),
+        color = UdyapPeach
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -2187,9 +2242,53 @@ private fun NetworkPillButton(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF334155),
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF3A302A),
                 fontSize = 13.5.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun DishaPastelCard(
+    title: String,
+    subtitle: String,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier
+            .height(94.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        color = backgroundColor
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 13.dp, vertical = 11.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF2B2B2B),
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFF525252),
+                fontSize = 11.5.sp,
+                lineHeight = 15.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

@@ -159,11 +159,11 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
             principalName = "Dr. Subhasree Das, M.Sc., Ph.D.",
             description = "Govt. Higher Secondary School, Phulbani is a premier government institution in Kandhamal district offering Science, Commerce, and Arts streams with advanced digital smart classrooms, modern physics and chemistry labs, and comprehensive state scholarship facilitation.",
             courses = listOf("+2 Science (PCMB/IT)", "+2 Commerce (Accountancy/BM)", "+2 Arts (Pol. Sc/Hist/Odia)", "Vocational IT & Robotics"),
-            facilities = listOf("Modern Science Labs", "Digital Library & EduLocker Hub", "Boys & Girls Hostel", "Sports Complex", "Smart Classrooms"),
+            facilities = listOf("Modern Science Labs", "Digital Library & UDYAP Hub", "Boys & Girls Hostel", "Sports Complex", "Smart Classrooms"),
             contactEmail = "ghss.phulbani@odisha.gov.in",
             contactPhone = "+91 6842 253 104",
             website = "https://kandhamal.nic.in/education/ghss-phulbani",
-            heroColor = 0xFFD81B60
+            heroColor = 0xFFF21147
         ),
         InstitutionDetail(
             id = "sch1",
@@ -717,8 +717,8 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
     val aiMessages = MutableStateFlow(
         listOf(
             AiMessage(
-                sender = "Runway AI",
-                text = "Namaskar Laxmikant! I am your EduLocker Runway Assistant. Ask me anything about your scholarship eligibility, Olympiad exam dates, APAAR ID, or HP LIFE developer tracks.",
+                sender = "Disha AI",
+                text = "Namaskar Laxmikant! I am Disha, your UDYAP AI Assistant. Ask me anything about your scholarship eligibility, Olympiad exam dates, APAAR ID, or HP LIFE developer tracks.",
                 isUser = false,
                 timestamp = "Just now"
             )
@@ -945,7 +945,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
             com.example.util.NotificationHelper.sendKycNotification(
                 getApplication(),
                 "📄 Document Verified: ${doc.title}",
-                "${doc.title} (${doc.documentNo}) cryptographic integrity verified on Odisha EduLocker."
+                "${doc.title} (${doc.documentNo}) cryptographic integrity verified on Odisha UDYAP."
             )
         }
     }
@@ -970,7 +970,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
             )
             com.example.util.NotificationHelper.sendSocialNotification(
                 getApplication(),
-                "📢 Post Published to EduLocker Community",
+                "📢 Post Published to UDYAP Community",
                 "Your post has been broadcasted to the student feed: \"${content.take(45)}...\""
             )
         }
@@ -985,7 +985,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
                 "Ashneer Gorver" -> "That's great! Keep focusing on your Olympiad prep and tech projects."
                 "Derric Hudston" -> "Awesome. Let me know when you finish the HP LIFE Web Dev course."
                 "Sushree Adyasha Mohanty" -> "Noted Laxmikant. Make sure your practical index is verified."
-                else -> "Received. We'll update the record in the school EduLocker portal."
+                else -> "Received. We'll update the record in the school UDYAP portal."
             }
             repository.sendChatMessage(contact, reply, isFromUser = false)
             com.example.util.NotificationHelper.sendChatNotification(
@@ -1006,7 +1006,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             kotlinx.coroutines.delay(1200)
             val answer = generateAiAnswer(query)
-            val aiMsg = AiMessage("Runway AI", answer, false, "Just now")
+            val aiMsg = AiMessage("Disha AI", answer, false, "Just now")
             aiMessages.value = aiMessages.value + aiMsg
             isAiThinking.value = false
         }
@@ -1022,7 +1022,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
                 "The State Icon Olympiad Trophy Series starts on 10 Dec 2026 with a ₹50,000 prize pool. Subjects include Mathematics, Geometry in Action, and Physics. You are already registered with Student ID ODIST-KMD-PLBM-LNO01."
 
             "hp life" in q || "course" in q || "web dev" in q || "developer" in q ->
-                "You are enrolled in the HP LIFE Developer Program: 'Introduction to Web Development' (Progress: 1/17). Upon finishing all 17 lessons and the capstone challenge, your official verifiable certificate will automatically appear in your EduLocker."
+                "You are enrolled in the HP LIFE Developer Program: 'Introduction to Web Development' (Progress: 1/17). Upon finishing all 17 lessons and the capstone challenge, your official verifiable certificate will automatically appear in your UDYAP Vault."
 
             "apaar" in q || "marksheet" in q || "document" in q ->
                 "All your academic documents (Class X Marksheet BSE 2024, Class XI Marksheet CHSE 2025, APAAR ID, and Aadhaar) are cryptographically signed with SHA-256 integrity hashes on the Odisha State Block-Locker network."
@@ -1031,7 +1031,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
                 "Govt. Higher Secondary School, Phulbani (School ID: GHSSP-PLBM-KMD-ODIST, AOR 56) offers 350 Science seats, 200 Commerce seats, 400 Arts seats, and 290 hostel accommodation capacity."
 
             else ->
-                "EduLocker gives you a unified ecosystem for all Odisha student services. You can track your scholarships, verify biometric KYC, download tamper-proof marksheets, and earn global certifications from HP LIFE!"
+                "UDYAP gives you a unified ecosystem for all Odisha student services. You can track your scholarships, verify biometric KYC, download tamper-proof marksheets, and earn global certifications from HP LIFE!"
         }
     }
 
@@ -1184,13 +1184,13 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
             com.example.util.NotificationHelper.sendKycNotification(
                 getApplication(),
                 "🔒 Aadhaar e-KYC Linked",
-                "Aadhaar Card (XXXX-XXXX-1418) verified and synced to EduLocker."
+                "Aadhaar Card (XXXX-XXXX-1418) verified and synced to UDYAP."
             )
         }
     }
 
     fun sendTestPushNotification(
-        title: String = "🔔 EduLocker Push Notification",
+        title: String = "🔔 UDYAP Push Notification",
         body: String = "Real-time push notifications are active and verified on your device!"
     ) {
         viewModelScope.launch {

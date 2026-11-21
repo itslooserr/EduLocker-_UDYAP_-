@@ -276,7 +276,7 @@ fun PostPhotoViewerModal(
                             val activeGradient = when (currentCustomTheme) {
                                 "Cyber Neon" -> listOf(Color(0xFF0F172A), Color(0xFF0284C7), Color(0xFF38BDF8))
                                 "Royal Gold" -> listOf(Color(0xFF451A03), Color(0xFFB45309), Color(0xFFF59E0B))
-                                "Rose Garden" -> listOf(Color(0xFF881337), Color(0xFFE11D48), Color(0xFFFB7185))
+                                "Rose Garden" -> listOf(Color(0xFF881337), Color(0xFFF21147), Color(0xFFFB7185))
                                 "Forest Emerald" -> listOf(Color(0xFF064E3B), Color(0xFF059669), Color(0xFF34D399))
                                 "Deep Purple" -> listOf(Color(0xFF3B0764), Color(0xFF7C3AED), Color(0xFFA855F7))
                                 else -> data.defaultGradient
@@ -326,7 +326,7 @@ fun PostPhotoViewerModal(
                             color = Color(0x99000000)
                         ) {
                             Text(
-                                text = "EduLocker Verified",
+                                text = "UDYAP Verified",
                                 color = PureWhite,
                                 fontSize = 10.5.sp,
                                 fontWeight = FontWeight.Bold,

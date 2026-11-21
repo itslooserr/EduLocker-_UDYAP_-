@@ -126,7 +126,7 @@ fun AppPermissionsDialog(
                             .clip(CircleShape)
                             .background(
                                 Brush.linearGradient(
-                                    listOf(Color(0xFFD81B60), Color(0xFF0284C7))
+                                    listOf(Color(0xFFF21147), Color(0xFF0284C7))
                                 )
                             ),
                         contentAlignment = Alignment.Center
@@ -152,7 +152,7 @@ fun AppPermissionsDialog(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "To give you the complete EduLocker experience, please enable the following core device capabilities:",
+                        text = "To give you the complete UDYAP experience, please enable the following core device capabilities:",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF64748B),
                         fontSize = 12.5.sp,

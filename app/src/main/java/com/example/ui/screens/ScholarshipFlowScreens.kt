@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -91,6 +93,8 @@ fun ScholarshipStep1Screen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp)
     ) {
         Column(
@@ -292,6 +296,8 @@ fun ScholarshipStep2UidaiScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp)
     ) {
         Column(
@@ -430,6 +436,8 @@ fun ScholarshipStep3VideoKycScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 20.dp)
     ) {
         Column(
@@ -475,6 +483,8 @@ fun ScholarshipStep4SuccessScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -565,6 +575,8 @@ fun ScholarshipStep5FormScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 20.dp)
     ) {
         Column(
@@ -784,7 +796,7 @@ fun ScholarshipStep5FormScreen(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "Allow EduLocker to securely access your previous academic records to verify your educational details.",
+                    text = "Allow UDYAP to securely access your previous academic records to verify your educational details.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextDark,
                     fontSize = 13.sp,
@@ -859,6 +871,8 @@ fun ScholarshipStep6ConsentScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 22.dp)
     ) {
         Column(
@@ -953,7 +967,7 @@ fun ScholarshipStep6ConsentScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     Text(
-                        text = "I confirm that the information and documents provided by me are true, accurate, and complete to the best of my knowledge.\n\nI give consent to EduLocker and the concerned school/authorities to verify my identity, academic records, attendance, family income, caste certificate, and other information required for processing my scholarship application.\n\nI understand that providing false or misleading information may affect my eligibility and may result in rejection or revert of my application.",
+                        text = "I confirm that the information and documents provided by me are true, accurate, and complete to the best of my knowledge.\n\nI give consent to UDYAP and the concerned school/authorities to verify my identity, academic records, attendance, family income, caste certificate, and other information required for processing my scholarship application.\n\nI understand that providing false or misleading information may affect my eligibility and may result in rejection or revert of my application.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextDark.copy(alpha = 0.85f),
                         fontSize = 13.sp,
@@ -999,6 +1013,8 @@ fun ScholarshipStep7FeeScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -1200,6 +1216,8 @@ fun ScholarshipStep10SubmittedScreen(
         modifier = modifier
             .fillMaxSize()
             .background(CanvasCream)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {

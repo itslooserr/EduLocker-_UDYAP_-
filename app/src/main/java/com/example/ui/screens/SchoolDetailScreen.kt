@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -157,7 +158,8 @@ fun SchoolDetailScreen(
                 IconButton(
                     onClick = onBack,
                     modifier = Modifier
-                        .padding(top = 36.dp, start = 16.dp)
+                        .statusBarsPadding()
+                        .padding(top = 12.dp, start = 16.dp)
                         .size(38.dp)
                         .clip(CircleShape)
                         .background(PureWhite.copy(alpha = 0.9f))
@@ -386,7 +388,7 @@ fun SchoolDetailScreen(
                         text = "More.",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFE11D48),
+                        color = Color(0xFFF21147),
                         fontSize = 12.5.sp,
                         modifier = Modifier.clickable {
                             Toast.makeText(context, "All academic statistics loaded for ${institution.name}", Toast.LENGTH_SHORT).show()
@@ -635,9 +637,9 @@ fun SchoolDetailScreen(
                                 modifier = Modifier.fillMaxWidth().height(44.dp),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFE11D48), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFF21147), modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Remove Emblem", color = Color(0xFFE11D48), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Remove Emblem", color = Color(0xFFF21147), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
 
@@ -694,9 +696,9 @@ fun SchoolDetailScreen(
                                 modifier = Modifier.fillMaxWidth().height(44.dp),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFE11D48), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFF21147), modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Reset Banner to Default Campus", color = Color(0xFFE11D48), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Reset Banner to Default Campus", color = Color(0xFFF21147), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                         }
 

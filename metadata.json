@@ -1,6 +1,6 @@
 {
-  "name": "EduLocker",
-  "description": "Govt. of Odisha state-level student digital ecosystem for secure academic records, scholarships, digital identity, and Video KYC.",
+  "name": "UDYAP",
+  "description": "UDYAP (Unified Digital Youth Advancement Platform) — Digital student ecosystem for academic records, scholarships, Disha AI guidance, social learning, and verified identity.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -62,7 +62,7 @@ object NotificationHelper {
 
             val socialChannel = NotificationChannel(
                 CHANNEL_SOCIAL,
-                "EduLocker Social & Chat Hub",
+                "UDYAP Social & Chat Hub",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Direct messages from teachers, classmates and community posts"

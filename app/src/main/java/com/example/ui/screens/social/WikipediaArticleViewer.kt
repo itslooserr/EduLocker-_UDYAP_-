@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -119,6 +121,8 @@ fun WikipediaArticleViewerModal(
         modifier = Modifier
             .fillMaxSize()
             .background(currentTheme.bg)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // -------------------------------------------------------------
@@ -167,7 +171,7 @@ fun WikipediaArticleViewerModal(
 
                         Column {
                             Text(
-                                text = "EduLocker Wiki",
+                                text = "UDYAP Wiki",
                                 color = currentTheme.text,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp
@@ -221,7 +225,7 @@ fun WikipediaArticleViewerModal(
                             isBookmarked = !isBookmarked
                             Toast.makeText(
                                 context,
-                                if (isBookmarked) "Article saved to EduLocker Vault 📚" else "Bookmark removed",
+                                if (isBookmarked) "Article saved to UDYAP Vault 📚" else "Bookmark removed",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }) {

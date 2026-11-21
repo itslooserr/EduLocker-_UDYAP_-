@@ -486,7 +486,7 @@ fun RecommendationDetailScreen(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "Complete verified modules to automatically pre-qualify for direct DBT credit via your linked Odisha EduLocker portal.",
+                        text = "Complete verified modules to automatically pre-qualify for direct DBT credit via your linked Odisha UDYAP portal.",
                         fontSize = 12.sp,
                         color = Color(0xFF92400E),
                         lineHeight = 16.sp
@@ -502,7 +502,7 @@ fun RecommendationDetailScreen(
                     NotificationHelper.sendActivityNotification(
                         context = context,
                         title = "🎯 Learning Track Activated!",
-                        body = "You successfully enrolled in '${recItem.title}'. Your progress is now synced with EduLocker."
+                        body = "You successfully enrolled in '${recItem.title}'. Your progress is now synced with UDYAP."
                     )
                     Toast.makeText(context, "Enrolled in '${recItem.title}'! Push notification dispatched.", Toast.LENGTH_LONG).show()
                 },
@@ -564,7 +564,7 @@ fun RecommendationDetailScreen(
                 ) {
                     Icon(imageVector = Icons.Filled.AutoAwesome, contentDescription = null, tint = PureWhite, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = "Ask Runway AI", fontSize = 12.5.sp, fontWeight = FontWeight.Bold, color = PureWhite)
+                    Text(text = "Ask Disha AI", fontSize = 12.5.sp, fontWeight = FontWeight.Bold, color = PureWhite)
                 }
             }
 

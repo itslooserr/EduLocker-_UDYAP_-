@@ -92,11 +92,16 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -113,6 +118,13 @@ import com.example.ui.theme.PureWhite
 import com.example.ui.theme.SoftBlushPink
 import com.example.ui.theme.TextDark
 import com.example.ui.theme.TextMuted
+import com.example.ui.theme.UdyapBlushLight
+import com.example.ui.theme.UdyapCrimson
+import com.example.ui.theme.UdyapPeachSoft
+import com.example.ui.theme.UdyapProfileBorder
+import com.example.ui.theme.UdyapProfileCardBg
+import com.example.ui.theme.UdyapProfileOrange
+import com.example.ui.theme.UdyapVerifiedOrange
 import com.example.ui.viewmodel.EduLockerViewModel
 import com.example.util.NotificationHelper
 import java.io.File
@@ -153,316 +165,343 @@ fun ProfileHubScreen(
         }
     }
 
+    var showPortfolioBar by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(CanvasCream)
+            .background(PureWhite)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // 1. TOP HERO BANNER (Candle in Glass on Wood with Brown Fabric Drapes - Clickable to change)
+            // 1. FULL-BLEED TOP HERO PHOTO BANNER + TOP-RIGHT SETTINGS BUTTON (Exact from 14_ecac9dff.png)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp)
+                    .height(255.dp)
             ) {
-                val bannerUri = profile?.bannerUri
-                if (!bannerUri.isNullOrEmpty() && File(bannerUri).exists()) {
+                val heroUri = profile?.photoUri?.takeIf { File(it).exists() }
+                    ?: profile?.bannerUri?.takeIf { File(it).exists() }
+                if (heroUri != null) {
                     AsyncImage(
-                        model = File(bannerUri),
-                        contentDescription = "Profile Banner",
+                        model = File(heroUri),
+                        contentDescription = "Profile Cover",
                         modifier = Modifier
                             .fillMaxSize()
-                            .clickable { showBannerChooserDialog = true },
+                            .clickable { showPhotoChooserDialog = true },
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    // High-Fidelity Photorealistic Candle in Glass on Wooden Tray (Exact Replica from 36.png)
-                    CandleBannerCanvas(
+                    DefaultStudentAvatarCanvas(
                         modifier = Modifier
                             .fillMaxSize()
-                            .clickable { showBannerChooserDialog = true }
+                            .clickable { showPhotoChooserDialog = true }
                     )
                 }
 
-                // Overlapping circular student photo (Exact position & styling from 36.png)
+                // Soft Peach Rounded-Square Settings Button at Top-Right
                 Box(
                     modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(start = 20.dp, bottom = 0.dp)
-                        .offset(y = 36.dp)
+                        .align(Alignment.TopEnd)
+                        .statusBarsPadding()
+                        .padding(top = 12.dp, end = 16.dp)
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(UdyapPeachSoft)
+                        .testTag("profile_settings_button")
+                        .clickable { onNavigateToAchievements() },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(88.dp)
-                            .clip(CircleShape)
-                            .border(3.5.dp, PureWhite, CircleShape)
-                            .background(Color(0xFF1E293B))
-                            .clickable { showPhotoChooserDialog = true },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        val photoUri = profile?.photoUri
-                        if (!photoUri.isNullOrEmpty() && File(photoUri).exists()) {
-                            AsyncImage(
-                                model = File(photoUri),
-                                contentDescription = "Profile Photo",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
-                            // Default Handsome Student Portrait Artwork matching 36.png
-                            DefaultStudentAvatarCanvas(modifier = Modifier.fillMaxSize())
-                        }
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Settings",
+                        tint = Color(0xFF1F1F1F),
+                        modifier = Modifier.size(22.dp)
+                    )
                 }
             }
 
-            Spacer(modifier = Modifier.height(44.dp))
-
-            // 2. PROFILE DETAILS CONTENT (Exact Layout from 36.png)
+            // 2. OVERLAPPING GOLD-BORDERED IDENTITY CARDS (Exact from 14_ecac9dff.png)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
+                    .offset(y = (-26).dp)
+                    .padding(horizontal = 18.dp)
             ) {
-                // Name & Verified Badge & Settings Gear
+                // Card 1: Name + Verified Shield + School + Location
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = UdyapProfileCardBg,
+                    border = BorderStroke(1.2.dp, UdyapProfileBorder)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = profile?.fullName ?: "Laxmikant Nayak",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = TextDark,
+                                fontSize = 20.sp
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.VerifiedUser,
+                                contentDescription = "Verified",
+                                tint = Color(0xFF4B4B4B),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "Verified",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted,
+                                fontSize = 12.5.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = profile?.schoolName ?: "Govt. Higher Secondary School",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Normal,
+                                color = Color(0xFF424242),
+                                fontSize = 13.5.sp
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clip(CircleShape)
+                                    .background(UdyapVerifiedOrange),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = "School Verified",
+                                    tint = PureWhite,
+                                    modifier = Modifier.size(10.dp)
+                                )
+                            }
+                            Text(
+                                text = profile?.schoolAor ?: "AOR 56",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextMuted,
+                                fontSize = 11.5.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(3.dp))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.LocationOn,
+                                contentDescription = null,
+                                tint = UdyapCrimson,
+                                modifier = Modifier.size(13.dp)
+                            )
+                            Text(
+                                text = profile?.schoolLocation ?: "Phulbani, Kandhamal, Odisha",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // Card 2: UDYAP ID + User ID + Region + Personal Details (Exact from 14_ecac9dff.png)
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onNavigateToIdCard() },
+                    shape = RoundedCornerShape(16.dp),
+                    color = UdyapProfileCardBg,
+                    border = BorderStroke(1.2.dp, UdyapProfileBorder)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                text = "UDYAP ID: ${profile?.eduLockerId ?: "ODIST-KMD-PLBM-LN001"}",
+                                fontWeight = FontWeight.Medium,
+                                color = UdyapProfileOrange,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "User ID: ${profile?.userId ?: "01009864"}",
+                                fontWeight = FontWeight.Medium,
+                                color = UdyapProfileOrange,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "Region: ${profile?.region ?: "Kandhamal, Odisha, India"}",
+                                fontWeight = FontWeight.Medium,
+                                color = UdyapProfileOrange,
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            DetailTextRow("S/D. of : ${profile?.parentName ?: "Sachidananda Nayak"}")
+                            DetailTextRow("D.O.B : 14 . 08 . 2008")
+                            DetailTextRow("Blood Group : ${profile?.bloodGroup ?: "B +ve"}")
+                            DetailTextRow("Address : ${profile?.address ?: "Phulbani, Kandhamal, Odisha"}")
+                            DetailTextRow("Pin Code : ${profile?.pinCode ?: "762001"}")
+                            DetailTextRow("Class : 12ᵗʰ Science")
+                            DetailTextRow("eKYC Status : ${profile?.ekycStatus ?: "Verified"}")
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // 3. SOCIALS & PORTFOLIO MENU ICON ROW (Exact from 14_ecac9dff.png)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "GitHub: laxmikant14", Toast.LENGTH_SHORT).show() }) {
+                        GitHubIconVector(size = 19.dp)
+                    }
+                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "LinkedIn: laxmikant-nayak", Toast.LENGTH_SHORT).show() }) {
+                        Text("in", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, color = TextDark)
+                    }
+                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Coding Club / Owl", Toast.LENGTH_SHORT).show() }) {
+                        Text("🦉", fontSize = 17.sp)
+                    }
+                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Unstop: laxmikant1418", Toast.LENGTH_SHORT).show() }) {
+                        Text("un", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = TextDark)
+                    }
+                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Link new social profile", Toast.LENGTH_SHORT).show() }) {
+                        Icon(Icons.Filled.Add, contentDescription = "Add social", tint = TextDark, modifier = Modifier.size(20.dp))
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .clickable { showPortfolioBar = !showPortfolioBar },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        StaggeredFilterIcon(tint = TextDark)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // Clean Minimal Portfolio Quick Access Chips (Achievements, ID Card, Experience, Education, Certificates)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PortfolioPillChip("Achievements") { activeModal = "Achivements" }
+                    PortfolioPillChip("ID Card") { onNavigateToIdCard() }
+                    PortfolioPillChip("Experience") { activeModal = "Exprience" }
+                    PortfolioPillChip("Education") { activeModal = "Education" }
+                    PortfolioPillChip("Certificates") { activeModal = "Cirtificates" }
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                // 4. FLOATING RIGHT "Post" + CRIMSON #F21147 CIRCLE BUTTON (Exact from 14_ecac9dff.png)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable {
+                                activeModal = "Drafts"
+                                Toast.makeText(context, "Create a new UDYAP student post or view drafts", Toast.LENGTH_SHORT).show()
+                            }
+                            .padding(start = 8.dp)
+                    ) {
+                        Text(
+                            text = "Post",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Normal,
+                            color = TextDark,
+                            fontSize = 15.sp
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(UdyapCrimson),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AddBox,
+                                contentDescription = "Create Post",
+                                tint = PureWhite,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // 5. BOTTOM ACTION ROW: Edit profile | Share ....... Drafts (Exact from 14_ecac9dff.png)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = profile?.fullName ?: "Laxmikant Nayak",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color(0xFF0F172A),
-                            fontSize = 22.sp
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(18.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF475569)),
-                            contentAlignment = Alignment.Center
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        ActionPillButton(
+                            text = "Edit profile",
+                            modifier = Modifier.width(106.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = "Verified",
-                                tint = PureWhite,
-                                modifier = Modifier.size(12.dp)
-                            )
+                            showPhotoChooserDialog = true
                         }
-                        Text(
-                            text = "Verified",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF64748B),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        ActionPillButton(
+                            text = "Share",
+                            modifier = Modifier.width(74.dp)
+                        ) {
+                            activeModal = "Share"
+                        }
                     }
 
-                    // Settings Button (Opens Screen 37 Main Settings)
-                    Box(
-                        modifier = Modifier
-                            .size(38.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFFFCE7F3))
-                            .clickable { onNavigateToAchievements() },
-                        contentAlignment = Alignment.Center
+                    ActionPillButton(
+                        text = "Drafts",
+                        modifier = Modifier.width(106.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings",
-                            tint = Color(0xFF1E293B),
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // School Name & AOR Badge (36.png)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = profile?.schoolName ?: "Govt. Higher Secondary School",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF334155),
-                        fontSize = 13.5.sp
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(OdishaMagenta),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = "Verified",
-                            tint = PureWhite,
-                            modifier = Modifier.size(10.dp)
-                        )
-                    }
-                    Text(
-                        text = profile?.schoolAor ?: "AOR 56",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF334155),
-                        fontSize = 11.5.sp
-                    )
-                }
-
-                // Location with Red Pin Icon
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(top = 2.dp)
-                ) {
-                    Text(text = "📍", fontSize = 12.sp)
-                    Text(
-                        text = profile?.schoolLocation ?: "Phulbani, Kandhamal, Odisha",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF64748B),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Magenta EduLocker Identifiers (Exact 3 lines in Pink from 36.png)
-                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text(
-                        text = "EduLocker ID: ${profile?.eduLockerId ?: "ODIST-KMD-PLBM-LN001"}",
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFFE11D48),
-                        fontSize = 13.5.sp
-                    )
-                    Text(
-                        text = "User ID: ${profile?.userId ?: "01009864"}",
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFFE11D48),
-                        fontSize = 13.5.sp
-                    )
-                    Text(
-                        text = "Region: ${profile?.region ?: "Kandhamal, Odisha, India"}",
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFFE11D48),
-                        fontSize = 13.5.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Personal Details List (Exact 7 lines from 36.png)
-                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    DetailTextRow("S/D. of : ${profile?.parentName ?: "Sachidananda Nayak"}")
-                    DetailTextRow("D.O.B : DD . MM . YYYY")
-                    DetailTextRow("Blood Group : ${profile?.bloodGroup ?: "B +ve"}")
-                    DetailTextRow("Address : ${profile?.address ?: "Phulbani, Kandhamal, Odisha"}")
-                    DetailTextRow("Pin Code : ${profile?.pinCode ?: "762001"}")
-                    DetailTextRow("Class : 12ᵗʰ Science")
-                    DetailTextRow("eKYC Status : ${profile?.ekycStatus ?: "Verified"}")
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // Socials Section (Exact 5 circular buttons from 36.png)
-                Text(
-                    text = "Socials",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B),
-                    fontSize = 16.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // 1. GitHub Icon
-                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "GitHub: laxmikant14", Toast.LENGTH_SHORT).show() }) {
-                        GitHubIconVector(size = 18.dp)
-                    }
-
-                    // 2. LinkedIn "in"
-                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "LinkedIn: laxmikant-nayak", Toast.LENGTH_SHORT).show() }) {
-                        Text("in", fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, color = Color(0xFF1E293B))
-                    }
-
-                    // 3. Owl Icon
-                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Duolingo / Owl", Toast.LENGTH_SHORT).show() }) {
-                        Text("🦉", fontSize = 16.sp)
-                    }
-
-                    // 4. "un" Icon
-                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Unstop: laxmikant1418", Toast.LENGTH_SHORT).show() }) {
-                        Text("un", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
-                    }
-
-                    // 5. Plus (+) Button
-                    SocialCircleBadgeContainer(onClick = { Toast.makeText(context, "Add social handle", Toast.LENGTH_SHORT).show() }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color(0xFF1E293B), modifier = Modifier.size(20.dp))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Action Buttons Row (Edit profile, Share, Drafts - 36.png)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    ActionPillButton("Edit profile", Modifier.weight(1f)) {
-                        showPhotoChooserDialog = true
-                    }
-                    ActionPillButton("Share", Modifier.weight(0.7f)) {
-                        activeModal = "Share"
-                    }
-                    ActionPillButton("Drafts", Modifier.weight(1f)) {
                         activeModal = "Drafts"
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // 6 Category Pink Pills (2 rows of 3 columns - Exact spelling & shape from 36.png)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    CategoryPillButton("Achivements", Modifier.weight(1f)) { activeModal = "Achivements" }
-                    CategoryPillButton("ID Card", Modifier.weight(1f)) { onNavigateToIdCard() }
-                    CategoryPillButton("Exprience", Modifier.weight(1f)) { activeModal = "Exprience" }
-                }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    CategoryPillButton("Education", Modifier.weight(1f)) { activeModal = "Education" }
-                    CategoryPillButton("Cirtificates", Modifier.weight(1f)) { activeModal = "Cirtificates" }
-                    CategoryPillButton("More..", Modifier.weight(1f)) { onNavigateToAchievements() }
-                }
-
-                Spacer(modifier = Modifier.height(84.dp))
             }
         }
 
@@ -551,9 +590,9 @@ fun ProfileHubScreen(
                                 modifier = Modifier.fillMaxWidth().height(44.dp),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFE11D48), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFF21147), modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Remove Photo", color = Color(0xFFE11D48), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Remove Photo", color = Color(0xFFF21147), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                             Spacer(modifier = Modifier.height(10.dp))
                         }
@@ -632,9 +671,9 @@ fun ProfileHubScreen(
                                 modifier = Modifier.fillMaxWidth().height(44.dp),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFE11D48), modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFF21147), modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Reset to Default Candle Banner", color = Color(0xFFE11D48), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Reset to Default Candle Banner", color = Color(0xFFF21147), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                             }
                             Spacer(modifier = Modifier.height(10.dp))
                         }
@@ -828,7 +867,7 @@ fun DefaultStudentAvatarCanvas(modifier: Modifier = Modifier) {
 
         // Subtle ambient red-orange rim light behind hair (from 36.png)
         drawCircle(
-            color = Color(0xFFE11D48).copy(alpha = 0.45f),
+            color = Color(0xFFF21147).copy(alpha = 0.45f),
             radius = w * 0.45f,
             center = Offset(w * 0.78f, h * 0.42f)
         )
@@ -908,13 +947,36 @@ private fun SocialCircleBadgeContainer(
 ) {
     Box(
         modifier = Modifier
-            .size(38.dp)
+            .size(40.dp)
             .clip(CircleShape)
-            .background(Color(0xFFFCE7F3))
+            .background(UdyapBlushLight)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         content()
+    }
+}
+
+@Composable
+private fun PortfolioPillChip(
+    text: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = Color(0xFFF9FAFB),
+        border = BorderStroke(1.dp, Color(0xFFECECEC)),
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .clickable { onClick() }
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium,
+            color = TextDark,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+        )
     }
 }
 
@@ -930,7 +992,7 @@ private fun ActionPillButton(
             .clip(RoundedCornerShape(10.dp))
             .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
-        color = Color(0xFFFCE7F3)
+        color = UdyapPeachSoft
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -939,9 +1001,9 @@ private fun ActionPillButton(
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF334155),
-                fontSize = 12.5.sp
+                fontWeight = FontWeight.Normal,
+                color = TextDark,
+                fontSize = 13.sp
             )
         }
     }
@@ -992,7 +1054,8 @@ fun AchievementsScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(CanvasCream)
+            .background(PureWhite)
+            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -1000,7 +1063,7 @@ fun AchievementsScreen(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             // 1. TOP HEADER: Profile Avatar + Name + EduLocker ID + Back Button (Exact from 37.png)
             Row(
@@ -1035,7 +1098,7 @@ fun AchievementsScreen(
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "ODIST-KMD-PLBM-LN001",
-                            color = Color(0xFFE11D48),
+                            color = Color(0xFFF21147),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -1047,7 +1110,7 @@ fun AchievementsScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFE11D48))
+                        .background(Color(0xFFF21147))
                         .clickable { onBack() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -1070,7 +1133,7 @@ fun AchievementsScreen(
                 // Filled Pink Pill: "Main Settings"
                 Surface(
                     shape = RoundedCornerShape(24.dp),
-                    color = Color(0xFFE11D48),
+                    color = Color(0xFFF21147),
                     modifier = Modifier.clickable {
                         Toast.makeText(context, "Main Settings Active", Toast.LENGTH_SHORT).show()
                     }
@@ -1089,7 +1152,7 @@ fun AchievementsScreen(
                     modifier = Modifier
                         .size(38.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFE11D48))
+                        .background(Color(0xFFF21147))
                         .clickable {
                             isSearchActive = !isSearchActive
                             if (isSearchActive) {
@@ -1222,9 +1285,9 @@ fun AchievementsScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // 5. FOOTER: "EduLocker | All Rights Reserved" (Exact from 37.png)
+            // 5. FOOTER: "UDYAP | All Rights Reserved"
             Text(
-                text = "EduLocker | All Rights Reserved",
+                text = "UDYAP | All Rights Reserved",
                 color = Color(0xFF94A3B8),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
@@ -1264,14 +1327,14 @@ private fun SettingsRowItem37(
         Icon(
             imageVector = icon,
             contentDescription = title,
-            tint = if (isRed) Color(0xFFE11D48) else Color(0xFF1E293B),
+            tint = if (isRed) Color(0xFFF21147) else Color(0xFF1E293B),
             modifier = Modifier.size(22.dp)
         )
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
-            color = if (isRed) Color(0xFFE11D48) else Color(0xFF334155),
+            color = if (isRed) Color(0xFFF21147) else Color(0xFF334155),
             fontSize = 14.5.sp
         )
     }
@@ -1341,7 +1404,7 @@ private fun SettingItemDetailDialog(
                     "Account Details" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             SettingDetailField("Student Name", "Laxmikant Nayak")
-                            SettingDetailField("EduLocker ID", "ODIST-KMD-PLBM-LN001")
+                            SettingDetailField("UDYAP ID", "ODIST-KMD-PLBM-LN001")
                             SettingDetailField("Father's Name", "Sachidananda Nayak")
                             SettingDetailField("Registered Mobile", "+91 98614 •••••")
                             SettingDetailField("Email Address", "n.laxmikant1418@gmail.com")
@@ -1410,7 +1473,7 @@ private fun SettingItemDetailDialog(
                             )
 
                             Text(
-                                text = "Sample Text: EduLocker makes studying and scholarships effortless.",
+                                text = "Sample Text: UDYAP makes studying and scholarships effortless.",
                                 fontSize = fontSizeSlider.sp,
                                 color = Color(0xFF475569)
                             )
@@ -1430,7 +1493,7 @@ private fun SettingItemDetailDialog(
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(text = "Vault Encryption Standard: AES-256 GCM", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
                             Text(
-                                text = "All certificates and study notes uploaded to EduLocker are encrypted locally on device before synchronizing with Odisha State Block-Locker nodes.",
+                                text = "All certificates and study notes uploaded to UDYAP are encrypted locally on device before synchronizing with Odisha State Block-Locker nodes.",
                                 fontSize = 12.5.sp,
                                 color = Color(0xFF475569),
                                 lineHeight = 17.sp
@@ -1479,7 +1542,7 @@ private fun SettingItemDetailDialog(
                     "Help & Support" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(text = "Govt. of Odisha Higher Education Helpline", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
-                            Text(text = "📞 Toll-Free: 1800-345-6770 / 155335\n📧 Email: support.edulocker@odisha.gov.in\n⏰ Support Hours: 9:00 AM - 6:00 PM (Mon-Sat)", fontSize = 12.5.sp, color = Color(0xFF475569), lineHeight = 18.sp)
+                            Text(text = "📞 Toll-Free: 1800-345-6770 / 155335\n📧 Email: support.udyap@odisha.gov.in\n⏰ Support Hours: 9:00 AM - 6:00 PM (Mon-Sat)", fontSize = 12.5.sp, color = Color(0xFF475569), lineHeight = 18.sp)
 
                             Spacer(modifier = Modifier.height(4.dp))
                             Button(
@@ -1550,7 +1613,7 @@ private fun SettingItemDetailDialog(
                     "Add Account" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(text = "Link Sibling or Secondary Student ID", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
-                            Text(text = "Enter the 12-digit APAAR ID or EduLocker student identification code to switch seamlessly between family student profiles.", fontSize = 12.sp, color = Color(0xFF475569))
+                            Text(text = "Enter the 12-digit APAAR ID or UDYAP student identification code to switch seamlessly between family student profiles.", fontSize = 12.sp, color = Color(0xFF475569))
 
                             Button(
                                 onClick = { Toast.makeText(context, "Account verification request initiated", Toast.LENGTH_SHORT).show() },
@@ -1600,7 +1663,7 @@ private fun SettingItemDetailDialog(
                                     },
                                     modifier = Modifier.weight(1f),
                                     shape = RoundedCornerShape(10.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11D48))
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF21147))
                                 ) {
                                     Text("Log Out", color = PureWhite, fontWeight = FontWeight.Bold)
                                 }
@@ -1765,7 +1828,7 @@ private fun ProfileModuleDialog(
                             )
                             ExperienceCardItem(
                                 role = "District Student Ambassador",
-                                organization = "EduLocker Odisha e-Governance Cell",
+                                organization = "UDYAP Odisha e-Governance Cell",
                                 duration = "Jan 2026 - Present",
                                 description = "Helped over 350 rural students generate their 12-digit APAAR Digital IDs and submit zero-cost scholarship applications."
                             )
@@ -1835,7 +1898,7 @@ private fun ProfileModuleDialog(
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             CertificateCardItem(
                                 title = "HP LIFE Web Development Certified Credential",
-                                issuer = "HP Foundation & EduLocker",
+                                issuer = "HP Foundation & UDYAP",
                                 certId = "HP-EDU-2026-88192",
                                 date = "24 Sept 2026"
                             )
@@ -1884,7 +1947,7 @@ private fun ProfileModuleDialog(
                             }
 
                             Text(
-                                text = "https://edulocker.odisha.gov.in/p/ODIST-KMD-LN001",
+                                text = "https://udyap.odisha.gov.in/p/ODIST-KMD-LN001",
                                 color = OdishaMagenta,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -2045,7 +2108,7 @@ private fun CertificateCardItem(title: String, issuer: String, certId: String, d
             }
             IconButton(
                 onClick = {
-                    NotificationHelper.sendAcademicNotification(context, "📄 Certificate Downloaded", "$title saved to EduLocker Vault.")
+                    NotificationHelper.sendAcademicNotification(context, "📄 Certificate Downloaded", "$title saved to UDYAP Vault.")
                     Toast.makeText(context, "Certificate #$certId downloaded to Vault!", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.size(32.dp)

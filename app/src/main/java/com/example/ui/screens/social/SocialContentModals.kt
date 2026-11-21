@@ -173,7 +173,7 @@ fun RevisionNoteViewerModal(
                             if (isSavedInVault) {
                                 NotificationHelper.sendAcademicNotification(
                                     context,
-                                    "📥 Saved to EduLocker Vault",
+                                    "📥 Saved to UDYAP Vault",
                                     "${note.title} is now available offline in your study vault."
                                 )
                                 Toast.makeText(context, "Saved to Vault! Available offline.", Toast.LENGTH_SHORT).show()
@@ -391,7 +391,7 @@ fun RevisionNoteViewerModal(
                         NotificationHelper.sendAcademicNotification(
                             context,
                             "📥 PDF Downloaded: ${note.title}",
-                            "Full high-resolution revision sheet saved to EduLocker Vault."
+                            "Full high-resolution revision sheet saved to UDYAP Vault."
                         )
                         Toast.makeText(context, "Downloaded ${note.title} PDF to Vault!", Toast.LENGTH_LONG).show()
                     },
@@ -954,7 +954,7 @@ fun EntranceDeadlineDetailModal(
                             NotificationHelper.sendScholarshipNotification(
                                 context,
                                 "⏰ Deadline Reminder: ${item.title}",
-                                "Reminder set! Deadline is ${item.lastDate}. Documents are verified in EduLocker."
+                                "Reminder set! Deadline is ${item.lastDate}. Documents are verified in UDYAP."
                             )
                             Toast.makeText(context, "Push Notification Reminder set for ${item.lastDate}!", Toast.LENGTH_LONG).show()
                         },
