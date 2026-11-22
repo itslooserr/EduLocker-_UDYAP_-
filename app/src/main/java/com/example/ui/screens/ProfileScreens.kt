@@ -2,15 +2,18 @@ package com.example.ui.screens
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,21 +22,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -58,6 +67,20 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.Fingerprint
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -92,16 +115,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -110,6 +132,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
+import com.example.R
 import com.example.ui.theme.CanvasCream
 import com.example.ui.theme.DarkBorder
 import com.example.ui.theme.OdishaMagenta
@@ -195,7 +218,10 @@ fun ProfileHubScreen(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    DefaultStudentAvatarCanvas(
+                    Image(
+                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                        contentDescription = "Default UDYAP Profile Cover",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable { showPhotoChooserDialog = true }
@@ -427,52 +453,9 @@ fun ProfileHubScreen(
                     PortfolioPillChip("Certificates") { activeModal = "Cirtificates" }
                 }
 
-                Spacer(modifier = Modifier.height(28.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                // 4. FLOATING RIGHT "Post" + CRIMSON #F21147 CIRCLE BUTTON (Exact from 14_ecac9dff.png)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(24.dp))
-                            .clickable {
-                                activeModal = "Drafts"
-                                Toast.makeText(context, "Create a new UDYAP student post or view drafts", Toast.LENGTH_SHORT).show()
-                            }
-                            .padding(start = 8.dp)
-                    ) {
-                        Text(
-                            text = "Post",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Normal,
-                            color = TextDark,
-                            fontSize = 15.sp
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .clip(CircleShape)
-                                .background(UdyapCrimson),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.AddBox,
-                                contentDescription = "Create Post",
-                                tint = PureWhite,
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                // 5. BOTTOM ACTION ROW: Edit profile | Share ....... Drafts (Exact from 14_ecac9dff.png)
+                // 4. BOTTOM ACTION ROW: Edit profile | Share ....... Drafts
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -554,7 +537,12 @@ fun ProfileHubScreen(
                                     contentScale = ContentScale.Crop
                                 )
                             } else {
-                                DefaultStudentAvatarCanvas(modifier = Modifier.fillMaxSize())
+                                Image(
+                                    painter = painterResource(id = R.drawable.udyap_red_banner),
+                                    contentDescription = "Default UDYAP Avatar",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
                             }
                         }
 
@@ -1039,324 +1027,609 @@ private fun CategoryPillButton(
 }
 
 // =========================================================================
-// SCREEN 37: Main Settings (Exact Pixel-Perfect Replica of 37.png)
+// SCREEN 37: Modern Minimal Grouped Settings Screen (Clean iOS/M3 Card Layout)
 // =========================================================================
 @Composable
 fun AchievementsScreen(
+    viewModel: EduLockerViewModel? = null,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler { onBack() }
+
     val context = LocalContext.current
+    val profile = viewModel?.studentProfile?.collectAsState()?.value
     var selectedSettingDialog by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
+    var biometricLockEnabled by remember { mutableStateOf(true) }
+    var selectedLanguage by remember { mutableStateOf("English") }
+
+    val settingsBg = Color(0xFFF4F4F6)
+    val dividerColor = Color(0xFFF1F1F4)
+
+    fun matchesSearch(vararg keywords: String): Boolean {
+        if (searchQuery.isBlank()) return true
+        val q = searchQuery.trim().lowercase()
+        return keywords.any { it.lowercase().contains(q) }
+    }
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(PureWhite)
+            .background(settingsBg)
             .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 18.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // 1. TOP HEADER: Profile Avatar + Name + EduLocker ID + Back Button (Exact from 37.png)
+            // 1. TOP HEADER BAR: Circular Back + Centered "Settings" + Circular Search
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    // Circular Avatar
-                    Box(
-                        modifier = Modifier
-                            .size(54.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, OdishaMagenta, CircleShape)
-                            .background(Color(0xFF1E293B)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        DefaultStudentAvatarCanvas(modifier = Modifier.fillMaxSize())
-                    }
-
-                    Column {
-                        Text(
-                            text = "Laxmikant Nayak",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B),
-                            fontSize = 18.sp
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "ODIST-KMD-PLBM-LN001",
-                            color = Color(0xFFF21147),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
-
-                // Solid Round Pink Button with White Back Arrow (Exact from 37.png)
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(42.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFF21147))
+                        .background(Color(0xFFEAEAEF))
+                        .testTag("settings_back_button")
                         .clickable { onBack() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = PureWhite,
+                        tint = Color(0xFF18181B),
                         modifier = Modifier.size(20.dp)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF18181B),
+                    fontSize = 17.5.sp
+                )
 
-            // 2. SUB-HEADER: "Main Settings" Filled Pink Pill + Circular Search Button (Exact from 37.png)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                // Filled Pink Pill: "Main Settings"
-                Surface(
-                    shape = RoundedCornerShape(24.dp),
-                    color = Color(0xFFF21147),
-                    modifier = Modifier.clickable {
-                        Toast.makeText(context, "Main Settings Active", Toast.LENGTH_SHORT).show()
-                    }
-                ) {
-                    Text(
-                        text = "Main Settings",
-                        color = PureWhite,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.5.sp,
-                        modifier = Modifier.padding(horizontal = 22.dp, vertical = 9.dp)
-                    )
-                }
-
-                // Circular Pink Search Button
                 Box(
                     modifier = Modifier
-                        .size(38.dp)
+                        .size(42.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFF21147))
+                        .background(if (isSearchActive) UdyapCrimson.copy(alpha = 0.14f) else Color(0xFFEAEAEF))
+                        .testTag("settings_search_button")
                         .clickable {
                             isSearchActive = !isSearchActive
-                            if (isSearchActive) {
-                                Toast.makeText(context, "Search settings...", Toast.LENGTH_SHORT).show()
-                            }
+                            if (!isSearchActive) searchQuery = ""
                         },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "Search",
-                        tint = PureWhite,
+                        imageVector = if (isSearchActive) Icons.Filled.Close else Icons.Filled.Search,
+                        contentDescription = "Search settings",
+                        tint = if (isSearchActive) UdyapCrimson else Color(0xFF18181B),
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // 3. CARD 1: PRIMARY SETTINGS BLOCK (Exact Soft Blush Pink Card from 37.png)
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(26.dp),
-                color = Color(0xFFFDE8EF)
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 22.dp),
-                    verticalArrangement = Arrangement.spacedBy(22.dp)
+            // Inline Search Filter Bar
+            AnimatedVisibility(visible = isSearchActive) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    color = PureWhite
                 ) {
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Person,
-                        title = "Account Details"
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        selectedSettingDialog = "Account Details"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Security,
-                        title = "Privacy Settings"
-                    ) {
-                        selectedSettingDialog = "Privacy Settings"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Lightbulb,
-                        title = "Persionalization & Display"
-                    ) {
-                        selectedSettingDialog = "Persionalization & Display"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Accessibility,
-                        title = "Accessibility"
-                    ) {
-                        selectedSettingDialog = "Accessibility"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Lock,
-                        title = "Content Privacy"
-                    ) {
-                        selectedSettingDialog = "Content Privacy"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.CheckCircle,
-                        title = "Permissions"
-                    ) {
-                        selectedSettingDialog = "Permissions"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Build,
-                        title = "Control & Tools"
-                    ) {
-                        selectedSettingDialog = "Control & Tools"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Headphones,
-                        title = "Help & Support"
-                    ) {
-                        selectedSettingDialog = "Help & Support"
-                    }
-
-                    SettingsRowItem37(
-                        icon = Icons.Filled.Description,
-                        title = "Privacy Policy & Terms of Use"
-                    ) {
-                        selectedSettingDialog = "Privacy Policy & Terms of Use"
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = null,
+                            tint = Color(0xFF9CA3AF),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Box(modifier = Modifier.weight(1f)) {
+                            if (searchQuery.isEmpty()) {
+                                Text(
+                                    text = "Search settings, privacy, language...",
+                                    color = Color(0xFF9CA3AF),
+                                    fontSize = 13.5.sp
+                                )
+                            }
+                            BasicTextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                singleLine = true,
+                                textStyle = TextStyle(color = Color(0xFF18181B), fontSize = 14.sp),
+                                cursorBrush = SolidColor(UdyapCrimson),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // 4. CARD 2: ACCOUNT MANAGEMENT BLOCK (Exact Soft Blush Pink Card from 37.png)
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(26.dp),
-                color = Color(0xFFFDE8EF)
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+            // 2. PROFILE IDENTITY CARD (White Rounded Card with Avatar + Name + Email + Chevron)
+            if (searchQuery.isBlank()) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .clickable { selectedSettingDialog = "Account Details" },
+                    shape = RoundedCornerShape(20.dp),
+                    color = PureWhite
                 ) {
-                    SettingsRowItem37(
-                        icon = Icons.Filled.List,
-                        title = "Manage Accounts"
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        selectedSettingDialog = "Manage Accounts"
-                    }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFF3F4F6)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                val photoUri = profile?.photoUri
+                                if (!photoUri.isNullOrEmpty() && File(photoUri).exists()) {
+                                    AsyncImage(
+                                        model = File(photoUri),
+                                        contentDescription = "Profile Avatar",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                } else {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                                        contentDescription = "UDYAP Profile Avatar",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                            }
 
-                    SettingsRowItem37(
-                        icon = Icons.Filled.PersonAdd,
-                        title = "Add Account"
-                    ) {
-                        selectedSettingDialog = "Add Account"
-                    }
+                            Column {
+                                Text(
+                                    text = profile?.fullName ?: "Laxmikant Nayak",
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF111827),
+                                    fontSize = 15.5.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "n.laxmikant1418@gmail.com",
+                                    color = Color(0xFF6B7280),
+                                    fontSize = 12.5.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
 
-                    SettingsRowItem37(
-                        icon = Icons.AutoMirrored.Filled.Logout,
-                        title = "Log Out",
-                        isRed = true
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Open Profile",
+                            tint = Color(0xFF9CA3AF),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // 3. SLEEK DARK FEATURE BANNER CARD (UDYAP Verified Plus)
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(22.dp))
+                        .clickable { selectedSettingDialog = "UDYAP Verified Plus" },
+                    shape = RoundedCornerShape(22.dp),
+                    color = Color(0xFF1B1B1F)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        selectedSettingDialog = "Log Out"
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(CircleShape)
+                                .background(UdyapCrimson.copy(alpha = 0.18f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AutoAwesome,
+                                contentDescription = null,
+                                tint = Color(0xFFFF4D79),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "UDYAP Verified Student",
+                                color = PureWhite,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.5.sp
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                            Text(
+                                text = "AI study plans, verified certificates & instant scholarship alerts.",
+                                color = Color(0xFFA1A1AA),
+                                fontSize = 11.5.sp,
+                                lineHeight = 15.5.sp
+                            )
+                        }
+
+                        Surface(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color(0xFF2B2B31),
+                            border = BorderStroke(1.dp, Color(0xFF3F3F46)),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .clickable { selectedSettingDialog = "UDYAP Verified Plus" }
+                        ) {
+                            Text(
+                                text = "Explore ›",
+                                color = PureWhite,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // 4. GROUP 1: ACCOUNT, ACADEMICS, BADGES, LINKED ACCOUNTS & BIOMETRIC LOCK
+            val group1Visible = matchesSearch("Account Settings", "profile", "Academic", "School", "Badges", "Achievements", "Scholarships", "Bank", "Fingerprint", "Face ID", "Lock", "Notifications")
+            if (group1Visible) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    color = PureWhite
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        if (matchesSearch("Account Settings", "profile", "account", "id")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Settings,
+                                title = "Account Settings",
+                                onClick = { selectedSettingDialog = "Account Details" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Academic & Linked School", "school", "class", "chse")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.School,
+                                title = "Academic & Linked School",
+                                onClick = { selectedSettingDialog = "Academic & Linked School" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Badges & Achievements", "badges", "awards", "olympiad")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.EmojiEvents,
+                                title = "Badges & Achievements",
+                                onClick = { selectedSettingDialog = "Badges & Achievements" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Linked Scholarships & Bank", "bank", "dbt", "apaar")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.AccountBalance,
+                                title = "Linked Scholarships & Bank",
+                                onClick = { selectedSettingDialog = "Linked Scholarships & Bank" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Notifications & Alerts", "alerts", "reminders", "deadlines")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Notifications,
+                                title = "Notifications & Alerts",
+                                onClick = { selectedSettingDialog = "Notifications & Alerts" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Enable Fingerprint / App Lock", "fingerprint", "face id", "biometric", "lock")) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        biometricLockEnabled = !biometricLockEnabled
+                                        Toast.makeText(
+                                            context,
+                                            if (biometricLockEnabled) "App Lock enabled" else "App Lock disabled",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Fingerprint,
+                                        contentDescription = "App Lock",
+                                        tint = Color(0xFF4B5563),
+                                        modifier = Modifier.size(21.dp)
+                                    )
+                                    Text(
+                                        text = "Enable Fingerprint / App Lock",
+                                        color = Color(0xFF18181B),
+                                        fontSize = 14.5.sp,
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                }
+                                Switch(
+                                    checked = biometricLockEnabled,
+                                    onCheckedChange = {
+                                        biometricLockEnabled = it
+                                        Toast.makeText(
+                                            context,
+                                            if (it) "App Lock enabled" else "App Lock disabled",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    colors = SwitchDefaults.colors(
+                                        checkedThumbColor = PureWhite,
+                                        checkedTrackColor = Color(0xFF22C55E),
+                                        uncheckedThumbColor = PureWhite,
+                                        uncheckedTrackColor = Color(0xFFD1D5DB),
+                                        uncheckedBorderColor = Color.Transparent
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+            }
+
+            // 5. GROUP 2: PREFERENCES, PRIVACY, STORAGE & HELP
+            val group2Visible = matchesSearch("Preferences", "Display", "Theme", "Font", "Privacy Policy", "Security", "Storage", "Downloads", "Help", "Support")
+            if (group2Visible) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    color = PureWhite
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        if (matchesSearch("Preferences", "Display", "Theme", "Font", "Personalization")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Tune,
+                                title = "Preferences & Display",
+                                onClick = { selectedSettingDialog = "Preferences & Display" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Privacy Policy", "Privacy", "Security", "Permissions")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Shield,
+                                title = "Privacy & Security",
+                                onClick = { selectedSettingDialog = "Privacy & Security" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Storage & Offline Downloads", "Storage", "Cache", "PDF", "Downloads")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.CloudDownload,
+                                title = "Storage & Downloads",
+                                onClick = { selectedSettingDialog = "Storage & Downloads" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Help & Support", "Helpline", "FAQ", "Support")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.HelpOutline,
+                                title = "Help & Support",
+                                onClick = { selectedSettingDialog = "Help & Support" }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+            }
+
+            // 6. GROUP 3: FEEDBACK, LANGUAGE, ABOUT & LOG OUT
+            val group3Visible = matchesSearch("Feedback", "Rate", "Language", "English", "Odia", "Hindi", "About", "Version", "Log Out", "Sign Out")
+            if (group3Visible) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    color = PureWhite
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        if (matchesSearch("Feedback", "Rate", "Review")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.ChatBubbleOutline,
+                                title = "Feedback",
+                                onClick = { selectedSettingDialog = "Feedback" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Language", "English", "Odia", "Hindi")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Translate,
+                                title = "Language",
+                                trailingValue = selectedLanguage,
+                                onClick = { selectedSettingDialog = "Language" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("About UDYAP", "Version", "Terms")) {
+                            ModernSettingsRow(
+                                icon = Icons.Outlined.Info,
+                                title = "About UDYAP",
+                                trailingValue = "v2.4",
+                                onClick = { selectedSettingDialog = "About UDYAP" }
+                            )
+                            HorizontalDivider(color = dividerColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                        if (matchesSearch("Log Out", "Sign Out", "Exit")) {
+                            ModernSettingsRow(
+                                icon = Icons.AutoMirrored.Filled.Logout,
+                                title = "Log Out",
+                                isDestructive = true,
+                                showChevron = false,
+                                onClick = { selectedSettingDialog = "Log Out" }
+                            )
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // 5. FOOTER: "UDYAP | All Rights Reserved"
             Text(
-                text = "UDYAP | All Rights Reserved",
-                color = Color(0xFF94A3B8),
-                fontSize = 12.sp,
+                text = "UDYAP • Unified Digital Youth Advancement Platform",
+                color = Color(0xFF9CA3AF),
+                fontSize = 11.5.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(96.dp))
+            Spacer(modifier = Modifier.height(28.dp))
         }
 
-        // Detailed Demo Content Sheets / Modals for each setting item
+        // Interactive Detail Modals for every Settings row
         selectedSettingDialog?.let { settingName ->
             SettingItemDetailDialog(
                 title = settingName,
+                selectedLanguage = selectedLanguage,
+                onLanguageSelected = { lang -> selectedLanguage = lang },
+                onConfirmLogout = {
+                    selectedSettingDialog = null
+                    if (viewModel != null) {
+                        viewModel.logout()
+                    } else {
+                        onBack()
+                    }
+                },
                 onDismiss = { selectedSettingDialog = null }
             )
         }
     }
 }
 
-// -----------------------------------------------------------
-// Settings Row Item for 37.png (Clean Dark Icons & Text)
-// -----------------------------------------------------------
 @Composable
-private fun SettingsRowItem37(
+private fun ModernSettingsRow(
     icon: ImageVector,
     title: String,
-    isRed: Boolean = false,
+    trailingValue: String? = null,
+    isDestructive: Boolean = false,
+    showChevron: Boolean = true,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 15.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = if (isRed) Color(0xFFF21147) else Color(0xFF1E293B),
-            modifier = Modifier.size(22.dp)
-        )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            color = if (isRed) Color(0xFFF21147) else Color(0xFF334155),
-            fontSize = 14.5.sp
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = if (isDestructive) UdyapCrimson else Color(0xFF4B5563),
+                modifier = Modifier.size(21.dp)
+            )
+            Text(
+                text = title,
+                color = if (isDestructive) UdyapCrimson else Color(0xFF18181B),
+                fontSize = 14.5.sp,
+                fontWeight = if (isDestructive) FontWeight.Medium else FontWeight.Normal,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (!trailingValue.isNullOrEmpty()) {
+                Text(
+                    text = trailingValue,
+                    color = Color(0xFF9CA3AF),
+                    fontSize = 13.5.sp
+                )
+            }
+            if (showChevron) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = Color(0xFF9CA3AF),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
 }
 
 // -----------------------------------------------------------
-// Setting Item Detail Dialog (Displays Demo Content for each Setting)
+// Setting Item Detail Dialog (Interactive Demo Content for each Setting)
 // -----------------------------------------------------------
 @Composable
 private fun SettingItemDetailDialog(
     title: String,
+    selectedLanguage: String = "English",
+    onLanguageSelected: (String) -> Unit = {},
+    onConfirmLogout: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     var fontSizeSlider by remember { mutableFloatStateOf(14f) }
-    var selectedTheme by remember { mutableStateOf("Canvas Classic") }
-    var highContrastEnabled by remember { mutableStateOf(false) }
-    var talkBackEnabled by remember { mutableStateOf(false) }
-    var hapticEnabled by remember { mutableStateOf(true) }
+    var selectedTheme by remember { mutableStateOf("UDYAP Clean Light") }
     var eKycStealth by remember { mutableStateOf(true) }
-    var notificationPerm by remember { mutableStateOf(true) }
+    var scholarshipAlerts by remember { mutableStateOf(true) }
+    var examAlerts by remember { mutableStateOf(true) }
+    var quizReminders by remember { mutableStateOf(true) }
     var cameraPerm by remember { mutableStateOf(true) }
+    var feedbackStars by remember { mutableIntStateOf(5) }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -1365,8 +1638,8 @@ private fun SettingItemDetailDialog(
         Surface(
             modifier = Modifier
                 .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(22.dp)),
-            shape = RoundedCornerShape(22.dp),
+                .clip(RoundedCornerShape(24.dp)),
+            shape = RoundedCornerShape(24.dp),
             color = PureWhite
         ) {
             Column(
@@ -1383,23 +1656,22 @@ private fun SettingItemDetailDialog(
                 ) {
                     Text(
                         text = title,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp,
-                        color = Color(0xFF0F172A)
+                        color = Color(0xFF111827)
                     )
                     IconButton(
                         onClick = onDismiss,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(36.dp)
                     ) {
-                        Icon(Icons.Filled.Close, contentDescription = "Close", tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
+                        Icon(Icons.Filled.Close, contentDescription = "Close", tint = Color(0xFF4B5563), modifier = Modifier.size(20.dp))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(color = Color(0xFFF3F4F6), thickness = 1.dp)
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Content Specific to each Setting
                 when (title) {
                     "Account Details" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1408,43 +1680,78 @@ private fun SettingItemDetailDialog(
                             SettingDetailField("Father's Name", "Sachidananda Nayak")
                             SettingDetailField("Registered Mobile", "+91 98614 •••••")
                             SettingDetailField("Email Address", "n.laxmikant1418@gmail.com")
-                            SettingDetailField("School / College", "Govt. Higher Secondary School, Phulbani")
-                            SettingDetailField("Class & Stream", "Class 12ᵗʰ Science (CHSE)")
-                            SettingDetailField("eKYC Status", "Verified via Aadhaar OTP (Block-Locker Sealed)")
+                            SettingDetailField("eKYC Status", "Verified via Aadhaar OTP")
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             Button(
-                                onClick = { Toast.makeText(context, "Profile details updated in cache", Toast.LENGTH_SHORT).show() },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
+                                onClick = {
+                                    Toast.makeText(context, "Account details synced", Toast.LENGTH_SHORT).show()
+                                    onDismiss()
+                                },
+                                modifier = Modifier.fillMaxWidth().height(48.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = UdyapCrimson)
                             ) {
-                                Text("Edit Account Info", fontWeight = FontWeight.Bold, fontSize = 13.5.sp)
+                                Text("Save & Sync Account", color = PureWhite, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             }
                         }
                     }
 
-                    "Privacy Settings" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            SettingToggleRow("Two-Factor Authentication", "Requires 4-digit PIN for scholarship submission", true) {}
-                            SettingToggleRow("Aadhaar Stealth Mode", "Masks UIDAI numbers with encrypted token hash", eKycStealth) { eKycStealth = it }
-                            SettingToggleRow("Profile Visibility", "Visible only to school teachers and verification officers", true) {}
-                            SettingToggleRow("Anonymous Community Posts", "Hides roll number when asking doubt queries", false) {}
-
-                            Spacer(modifier = Modifier.height(6.dp))
+                    "UDYAP Verified Plus" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(
-                                text = "🔒 Protected by Odisha State Data Security Framework 2026",
-                                color = Color(0xFF059669),
-                                fontSize = 11.5.sp,
-                                fontWeight = FontWeight.SemiBold
+                                text = "Your student account is actively verified with full access to all UDYAP tools at zero cost.",
+                                color = Color(0xFF4B5563),
+                                fontSize = 13.sp,
+                                lineHeight = 19.sp
                             )
+                            SettingDetailField("Disha AI Advisor", "Unlimited study plans, quizzes & doubt solving")
+                            SettingDetailField("Verified Credentials", "Instant SHA-256 digital marksheets & APAAR ID")
+                            SettingDetailField("Scholarship Fast-Track", "Priority deadline alerts & 1-click DBT tracking")
+                            SettingDetailField("Developer Courses", "Free HD video tracks & completion certificates")
                         }
                     }
 
-                    "Persionalization & Display" -> {
+                    "Academic & Linked School" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            SettingDetailField("Institution", "Govt. Higher Secondary School, Phulbani")
+                            SettingDetailField("Institution Code", "AOR-56 • GHSSP-PLBM-KMD")
+                            SettingDetailField("Board Affiliation", "CHSE Odisha")
+                            SettingDetailField("Current Class", "Class 12ᵗʰ Science (PCMB + IT)")
+                            SettingDetailField("APAAR ID", "7829-4501-9238 (Active)")
+                        }
+                    }
+
+                    "Badges & Achievements" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            SettingDetailField("State Science Fair 2025", "Gold Medalist — IoT Smart Irrigation")
+                            SettingDetailField("Odisha Olympiad Series", "State Rank 14 (98.6 Percentile)")
+                            SettingDetailField("UDYAP Developer Program", "Web Development Honors (100/100)")
+                            SettingDetailField("Attendance Merit", "100% Academic Excellence Award")
+                        }
+                    }
+
+                    "Linked Scholarships & Bank" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            SettingDetailField("Active Application", "Odisha Post-Matric Scholarship 2026-27")
+                            SettingDetailField("DBT Bank Account", "State Bank of India •••• 4829 (NPCI Seeded)")
+                            SettingDetailField("Parent Consent", "Verified — Sachidananda Nayak")
+                            SettingDetailField("Disbursal Mode", "Direct Benefit Transfer (Active)")
+                        }
+                    }
+
+                    "Notifications & Alerts" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            SettingToggleRow("Scholarship Deadlines", "Alerts 7 days before closing dates", scholarshipAlerts) { scholarshipAlerts = it }
+                            SettingToggleRow("Exam & Admit Card Drops", "CHSE, JEE, NEET & OJEE live notices", examAlerts) { examAlerts = it }
+                            SettingToggleRow("Daily Study & Quiz Reminders", "Gentle morning revision nudges from Disha", quizReminders) { quizReminders = it }
+                        }
+                    }
+
+                    "Preferences & Display" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                            Text(text = "App Theme Mode", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
-                            listOf("Canvas Classic (Default)", "Light Crisp", "Dark Slate").forEach { theme ->
+                            Text(text = "App Theme", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = Color(0xFF18181B))
+                            listOf("UDYAP Clean Light", "Warm Cream", "System Default").forEach { theme ->
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -1454,175 +1761,166 @@ private fun SettingItemDetailDialog(
                                     RadioButton(
                                         selected = (selectedTheme == theme),
                                         onClick = { selectedTheme = theme },
-                                        colors = RadioButtonDefaults.colors(selectedColor = OdishaMagenta)
+                                        colors = RadioButtonDefaults.colors(selectedColor = UdyapCrimson)
                                     )
-                                    Text(text = theme, fontSize = 13.5.sp, color = Color(0xFF334155))
+                                    Text(text = theme, fontSize = 13.5.sp, color = Color(0xFF374151))
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = "Font Size Adjustment (${fontSizeSlider.toInt()} sp)", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
+                            Text(text = "Text Size (${fontSizeSlider.toInt()} sp)", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = Color(0xFF18181B))
                             Slider(
                                 value = fontSizeSlider,
                                 onValueChange = { fontSizeSlider = it },
                                 valueRange = 12f..20f,
                                 colors = SliderDefaults.colors(
-                                    thumbColor = OdishaMagenta,
-                                    activeTrackColor = OdishaMagenta
+                                    thumbColor = UdyapCrimson,
+                                    activeTrackColor = UdyapCrimson
                                 )
                             )
-
                             Text(
-                                text = "Sample Text: UDYAP makes studying and scholarships effortless.",
+                                text = "Preview: UDYAP keeps your learning simple and organized.",
                                 fontSize = fontSizeSlider.sp,
-                                color = Color(0xFF475569)
+                                color = Color(0xFF4B5563)
                             )
                         }
                     }
 
-                    "Accessibility" -> {
+                    "Privacy & Security" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            SettingToggleRow("High Contrast Mode", "Enhances text readability with sharp dark borders", highContrastEnabled) { highContrastEnabled = it }
-                            SettingToggleRow("Screen Reader (TalkBack)", "Optimizes voice cues for vision impaired students", talkBackEnabled) { talkBackEnabled = it }
-                            SettingToggleRow("Haptic Feedback", "Provides subtle vibration on buttons and tabs", hapticEnabled) { hapticEnabled = it }
-                            SettingToggleRow("Lesson Subtitles (Captions)", "Auto-enables Odia & English subtitles for videos", true) {}
-                        }
-                    }
-
-                    "Content Privacy" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(text = "Vault Encryption Standard: AES-256 GCM", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
+                            SettingToggleRow("Aadhaar Masking", "Hides full Aadhaar digits in document preview", eKycStealth) { eKycStealth = it }
+                            SettingToggleRow("Camera Verification Access", "Used only during QR scan & Video e-KYC", cameraPerm) { cameraPerm = it }
+                            SettingToggleRow("Profile Visibility", "Only visible to verified teachers & institution", true) {}
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "All certificates and study notes uploaded to UDYAP are encrypted locally on device before synchronizing with Odisha State Block-Locker nodes.",
-                                fontSize = 12.5.sp,
-                                color = Color(0xFF475569),
-                                lineHeight = 17.sp
+                                text = "DPDP Act 2023 Compliant • Zero third-party ad trackers. Your documents stay encrypted on-device.",
+                                color = Color(0xFF059669),
+                                fontSize = 11.5.sp,
+                                lineHeight = 16.sp
                             )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            SettingToggleRow("Safe Search in EduCreators", "Filters community videos strictly to academic topics", true) {}
-                            SettingToggleRow("Auto-Sync Revision Notes", "Keeps cheat-sheets available offline", true) {}
                         }
                     }
 
-                    "Permissions" -> {
+                    "Storage & Downloads" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            SettingToggleRow("Push Notifications", "For scholarship deadlines & exam alerts", notificationPerm) { notificationPerm = it }
-                            SettingToggleRow("Camera Access", "For QR document verification & OCR scanner", cameraPerm) { cameraPerm = it }
-                            SettingToggleRow("Photo Library Access", "Zero-permission native photo picker active", true) {}
-                        }
-                    }
-
-                    "Control & Tools" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            SettingDetailField("Offline Documents", "18.4 MB (6 verified records)")
+                            SettingDetailField("Course Cache", "24.0 MB (2 downloaded lessons)")
+                            Spacer(modifier = Modifier.height(4.dp))
                             Button(
-                                onClick = { Toast.makeText(context, "Cleared 42 MB cached offline PDFs", Toast.LENGTH_SHORT).show() },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F5F9))
+                                onClick = { Toast.makeText(context, "Cleared 24 MB temporary cache", Toast.LENGTH_SHORT).show() },
+                                modifier = Modifier.fillMaxWidth().height(46.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF3F4F6))
                             ) {
-                                Text("Clear Downloaded PDF Cache (42 MB)", color = Color(0xFF1E293B), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                                Text("Clear Temporary Cache", color = Color(0xFF18181B), fontWeight = FontWeight.SemiBold, fontSize = 13.5.sp)
                             }
-
                             Button(
                                 onClick = {
-                                    NotificationHelper.sendAcademicNotification(context, "📄 Portfolio Exported", "Student Portfolio PDF generated successfully.")
-                                    Toast.makeText(context, "Exported Student Portfolio PDF to Vault!", Toast.LENGTH_SHORT).show()
+                                    NotificationHelper.sendAcademicNotification(context, "Portfolio Exported", "Student Portfolio PDF generated.")
+                                    Toast.makeText(context, "Student Portfolio PDF exported!", Toast.LENGTH_SHORT).show()
                                 },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
+                                modifier = Modifier.fillMaxWidth().height(46.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = UdyapCrimson)
                             ) {
-                                Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Download, contentDescription = null, tint = PureWhite, modifier = Modifier.size(17.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Export Student Portfolio (PDF)", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Export Student Portfolio (PDF)", color = PureWhite, fontWeight = FontWeight.SemiBold, fontSize = 13.5.sp)
                             }
                         }
                     }
 
                     "Help & Support" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(text = "Govt. of Odisha Higher Education Helpline", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF1E293B))
-                            Text(text = "📞 Toll-Free: 1800-345-6770 / 155335\n📧 Email: support.udyap@odisha.gov.in\n⏰ Support Hours: 9:00 AM - 6:00 PM (Mon-Sat)", fontSize = 12.5.sp, color = Color(0xFF475569), lineHeight = 18.sp)
-
-                            Spacer(modifier = Modifier.height(4.dp))
+                            SettingDetailField("Student Helpline", "1800-345-6770 (Toll-Free)")
+                            SettingDetailField("Support Email", "support@udyap.in")
+                            SettingDetailField("Hours", "Mon–Sat, 9:00 AM – 6:00 PM")
+                            Spacer(modifier = Modifier.height(6.dp))
                             Button(
-                                onClick = { Toast.makeText(context, "Connecting to Odisha Student Grievance Desk...", Toast.LENGTH_SHORT).show() },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
+                                onClick = {
+                                    Toast.makeText(context, "Support ticket created — response within 24 hrs", Toast.LENGTH_SHORT).show()
+                                    onDismiss()
+                                },
+                                modifier = Modifier.fillMaxWidth().height(46.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = UdyapCrimson)
                             ) {
-                                Text("Raise Grievance Ticket", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                                Text("Contact Support", color = PureWhite, fontWeight = FontWeight.SemiBold, fontSize = 13.5.sp)
                             }
                         }
                     }
 
-                    "Privacy Policy & Terms of Use" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(text = "Digital Personal Data Protection (DPDP) Act 2023", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
+                    "Feedback" -> {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             Text(
-                                text = "1. Student identity and marksheet credentials are used exclusively for verification and scholarship disbursement.\n2. No commercial third-party trackers or advertising algorithms are utilized.\n3. Encrypted backups reside strictly within MeitY certified Indian data centers.",
-                                fontSize = 12.sp,
-                                color = Color(0xFF475569),
-                                lineHeight = 17.sp
+                                text = "How is your experience with UDYAP?",
+                                color = Color(0xFF4B5563),
+                                fontSize = 13.5.sp
                             )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                (1..5).forEach { star ->
+                                    Icon(
+                                        imageVector = Icons.Filled.Star,
+                                        contentDescription = "$star star",
+                                        tint = if (star <= feedbackStars) Color(0xFFF59E0B) else Color(0xFFE5E7EB),
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clickable { feedbackStars = star }
+                                    )
+                                }
+                            }
+                            Button(
+                                onClick = {
+                                    Toast.makeText(context, "Thank you for your $feedbackStars-star rating!", Toast.LENGTH_SHORT).show()
+                                    onDismiss()
+                                },
+                                modifier = Modifier.fillMaxWidth().height(46.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = UdyapCrimson)
+                            ) {
+                                Text("Submit Feedback", color = PureWhite, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            }
                         }
                     }
 
-                    "Manage Accounts" -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color(0xFFECFDF5),
-                                border = BorderStroke(1.dp, Color(0xFFA7F3D0)),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
+                    "Language" -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            listOf("English", "ଓଡ଼ିଆ (Odia)", "हिन्दी (Hindi)").forEach { lang ->
                                 Row(
-                                    modifier = Modifier.padding(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .clickable {
+                                            onLanguageSelected(lang.substringBefore(" "))
+                                            Toast.makeText(context, "Language set to $lang", Toast.LENGTH_SHORT).show()
+                                            onDismiss()
+                                        }
+                                        .padding(vertical = 8.dp, horizontal = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Column {
-                                        Text(text = "Laxmikant Nayak (Active)", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF065F46))
-                                        Text(text = "Student Account • Class 12", fontSize = 11.sp, color = Color(0xFF047857))
-                                    }
-                                    Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(18.dp))
-                                }
-                            }
-
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color(0xFFF8FAFC),
-                                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
-                                modifier = Modifier.fillMaxWidth().clickable {
-                                    Toast.makeText(context, "Switching to Parent Account...", Toast.LENGTH_SHORT).show()
-                                }
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(12.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column {
-                                        Text(text = "Sachidananda Nayak", fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = Color(0xFF334155))
-                                        Text(text = "Linked Parent Account", fontSize = 11.sp, color = Color(0xFF64748B))
-                                    }
+                                    Text(text = lang, fontSize = 14.5.sp, color = Color(0xFF18181B))
+                                    RadioButton(
+                                        selected = lang.startsWith(selectedLanguage),
+                                        onClick = {
+                                            onLanguageSelected(lang.substringBefore(" "))
+                                            onDismiss()
+                                        },
+                                        colors = RadioButtonDefaults.colors(selectedColor = UdyapCrimson)
+                                    )
                                 }
                             }
                         }
                     }
 
-                    "Add Account" -> {
+                    "About UDYAP" -> {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(text = "Link Sibling or Secondary Student ID", fontWeight = FontWeight.Bold, fontSize = 13.5.sp, color = Color(0xFF1E293B))
-                            Text(text = "Enter the 12-digit APAAR ID or UDYAP student identification code to switch seamlessly between family student profiles.", fontSize = 12.sp, color = Color(0xFF475569))
-
-                            Button(
-                                onClick = { Toast.makeText(context, "Account verification request initiated", Toast.LENGTH_SHORT).show() },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
-                            ) {
-                                Text("+ Link New Student ID", fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                            }
+                            SettingDetailField("Application", "UDYAP — Unified Digital Youth Advancement Platform")
+                            SettingDetailField("Version", "2.4.0 (Production Build)")
+                            SettingDetailField("Data Security", "Local-first Room + Encrypted Preferences")
                         }
                     }
 
@@ -1632,47 +1930,46 @@ private fun SettingItemDetailDialog(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Are you sure you want to log out?",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp,
-                                color = Color(0xFF1E293B)
+                                text = "Log out of UDYAP?",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 15.5.sp,
+                                color = Color(0xFF18181B)
                             )
                             Text(
-                                text = "Your cached documents and scholarship drafts will remain securely stored on device.",
-                                fontSize = 12.sp,
-                                color = Color(0xFF64748B),
+                                text = "Next time you open the app, you will be asked to sign in again.",
+                                fontSize = 12.5.sp,
+                                color = Color(0xFF6B7280),
                                 textAlign = TextAlign.Center
                             )
-
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
                                 OutlinedButton(
                                     onClick = onDismiss,
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(10.dp)
+                                    modifier = Modifier.weight(1f).height(46.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    border = BorderStroke(1.dp, Color(0xFFE5E7EB))
                                 ) {
-                                    Text("Cancel", color = Color(0xFF475569))
+                                    Text("Cancel", color = Color(0xFF374151))
                                 }
-
                                 Button(
                                     onClick = {
                                         Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
-                                        onDismiss()
+                                        onConfirmLogout()
                                     },
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF21147))
+                                    modifier = Modifier.weight(1f).height(46.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = UdyapCrimson)
                                 ) {
-                                    Text("Log Out", color = PureWhite, fontWeight = FontWeight.Bold)
+                                    Text("Log Out", color = PureWhite, fontWeight = FontWeight.SemiBold)
                                 }
                             }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

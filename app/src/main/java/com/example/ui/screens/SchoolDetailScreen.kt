@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,11 +65,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.example.R
 import com.example.ui.components.PostPhotoViewerData
 import com.example.ui.components.PostPhotoViewerModal
 import com.example.ui.theme.CanvasCream
@@ -147,7 +150,10 @@ fun SchoolDetailScreen(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    SchoolCampusBannerCanvas(
+                    Image(
+                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                        contentDescription = "Default UDYAP School Banner",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable { showBannerDialog = true }
@@ -198,7 +204,14 @@ fun SchoolDetailScreen(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            SchoolEmblemLogo(size = 80.dp)
+                            Image(
+                                painter = painterResource(id = R.drawable.udyap_red_banner),
+                                contentDescription = "Default UDYAP School Emblem",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
                         }
                     }
                 }
@@ -824,12 +837,12 @@ private fun SchoolPhotoCard(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawRect(brush = Brush.verticalGradient(colors = bgGradient))
-                    // Decorative scene shapes
-                    drawCircle(color = PureWhite.copy(alpha = 0.15f), radius = size.width * 0.4f, center = Offset(size.width * 0.8f, size.height * 0.2f))
-                    drawRect(color = Color.Black.copy(alpha = 0.25f), topLeft = Offset(0f, size.height * 0.70f), size = Size(size.width, size.height * 0.30f))
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.udyap_red_banner),
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
 
             // Photo label at bottom

@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,12 +61,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
+import com.example.R
 import com.example.ui.theme.CanvasCream
 import com.example.ui.theme.OdishaMagenta
 import com.example.ui.theme.PureWhite
@@ -272,6 +275,46 @@ fun PostPhotoViewerModal(
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
+                        } else if (currentCustomTheme == null) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.udyap_red_banner),
+                                    contentDescription = data.title,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Black.copy(alpha = 0.65f)
+                                                )
+                                            )
+                                        )
+                                )
+                                Column(
+                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(16.dp)
+                                ) {
+                                    Text(
+                                        text = data.title,
+                                        color = PureWhite,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 17.sp
+                                    )
+                                    Spacer(modifier = Modifier.height(3.dp))
+                                    Text(
+                                        text = "Tap Change Photo to upload your own image",
+                                        color = PureWhite.copy(alpha = 0.8f),
+                                        fontSize = 11.5.sp
+                                    )
+                                }
+                            }
                         } else {
                             val activeGradient = when (currentCustomTheme) {
                                 "Cyber Neon" -> listOf(Color(0xFF0F172A), Color(0xFF0284C7), Color(0xFF38BDF8))

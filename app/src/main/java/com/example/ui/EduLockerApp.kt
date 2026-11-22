@@ -89,7 +89,13 @@ fun EduLockerApp(
                 ) { page ->
                     when (page) {
                         // Splash (Screen 1)
-                        1 -> SplashScreen(onTimeout = { viewModel.navigateToPage(2) })
+                        1 -> SplashScreen(onTimeout = {
+                            if (viewModel.isLoggedIn.value) {
+                                viewModel.navigateToPage(11)
+                            } else {
+                                viewModel.navigateToPage(2)
+                            }
+                        })
 
                         // Onboarding Sequence (Screens 2 to 7)
                         in 2..7 -> OnboardingScreen(
@@ -116,7 +122,7 @@ fun EduLockerApp(
                         )
                         10 -> PinConfirmationScreen(
                             viewModel = viewModel,
-                            onLoginSuccess = { viewModel.navigateToPage(11) }
+                            onLoginSuccess = { viewModel.completeLogin() }
                         )
 
                         // Home Hub Screens (11 & 24)
@@ -229,9 +235,13 @@ fun EduLockerApp(
                             onNavigateToAiGuide = { viewModel.navigateToPage(34) }
                         )
 
-                        // HP LIFE Developer Program (28 to 33)
+                        // UDYAP Developer Program & Courses Hub (28 to 33)
                         28 -> DeveloperProgramIntroScreen(
-                            onNext = { viewModel.navigateToPage(29) }
+                            onNext = { viewModel.navigateToPage(32) },
+                            viewModel = viewModel,
+                            onBack = { viewModel.navigateToPage(27) },
+                            onOpenCourseDetail = { viewModel.navigateToPage(32) },
+                            onOpenPlayer = { viewModel.navigateToPage(33) }
                         )
                         29 -> DeveloperProgramAboutScreen(
                             onContinue = { viewModel.navigateToPage(30) }
@@ -245,11 +255,13 @@ fun EduLockerApp(
                             onContinue = { viewModel.navigateToPage(32) }
                         )
                         32 -> LessonOverviewScreen(
-                            onWatch = { viewModel.navigateToPage(33) }
+                            onWatch = { viewModel.navigateToPage(33) },
+                            viewModel = viewModel,
+                            onBack = { viewModel.navigateToPage(28) }
                         )
                         33 -> VideoPlayerScreen(
                             viewModel = viewModel,
-                            onSaveLater = { viewModel.navigateToPage(28) }
+                            onSaveLater = { viewModel.navigateToPage(32) }
                         )
 
                         // Disha AI Guide (34)
@@ -265,6 +277,7 @@ fun EduLockerApp(
                             onNavigateToAchievements = { viewModel.navigateToPage(37) }
                         )
                         37 -> AchievementsScreen(
+                            viewModel = viewModel,
                             onBack = { viewModel.navigateToPage(36) }
                         )
 

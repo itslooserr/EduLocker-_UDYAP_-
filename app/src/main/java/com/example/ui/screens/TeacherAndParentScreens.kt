@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,12 +57,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import com.example.R
 import com.example.ui.theme.CanvasCream
 import com.example.ui.theme.OdishaMagenta
 import com.example.ui.theme.PureWhite
@@ -131,8 +134,10 @@ fun TeacherProfileScreen(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    // Chalkboard with authentic chalk writings (sin 300°, cos 30°, P_N/pi*r^2, formulas)
-                    BlackboardCanvas(
+                    Image(
+                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                        contentDescription = "Default UDYAP Teacher Banner",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable { showBannerDialog = true }
@@ -165,8 +170,14 @@ fun TeacherProfileScreen(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            // Default Teacher Portrait (matching 40.png)
-                            TeacherAvatarCanvas(modifier = Modifier.fillMaxSize())
+                            Image(
+                                painter = painterResource(id = R.drawable.udyap_red_banner),
+                                contentDescription = "Default UDYAP Teacher Avatar",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
                         }
                     }
                 }
@@ -493,7 +504,10 @@ fun ParentProfileScreen(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    SandDunesBannerCanvas(
+                    Image(
+                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                        contentDescription = "Default UDYAP Parent Banner",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable { showBannerDialog = true }
@@ -526,7 +540,14 @@ fun ParentProfileScreen(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            ParentAvatarCanvas(modifier = Modifier.fillMaxSize())
+                            Image(
+                                painter = painterResource(id = R.drawable.udyap_red_banner),
+                                contentDescription = "Default UDYAP Parent Avatar",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
                         }
                     }
                 }

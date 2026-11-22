@@ -180,8 +180,7 @@ fun OlympiadSeriesScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.55f)
-                    .height(52.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(52.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {
@@ -263,8 +262,7 @@ fun OlympiadSuccessScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 36.dp)
                 .fillMaxWidth(0.55f)
-                .height(52.dp)
-                .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                .height(52.dp),
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
         ) {

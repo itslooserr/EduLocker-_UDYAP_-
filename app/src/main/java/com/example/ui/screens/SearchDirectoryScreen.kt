@@ -1,8 +1,13 @@
 package com.example.ui.screens
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -68,8 +73,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -78,10 +85,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.R
 import com.example.ui.components.DocumentPreviewDialog
 import com.example.ui.theme.DarkBorder
+import com.example.ui.theme.DmSansFontFamily
 import com.example.ui.theme.HairlineDivider
-import com.example.ui.theme.NewsreaderFontFamily
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.TextDark
 import com.example.ui.theme.TextMuted
@@ -90,6 +99,7 @@ import com.example.ui.theme.UdyapGreenCta
 import com.example.ui.theme.UdyapPeachSoft
 import com.example.ui.theme.UdyapVerifiedOrange
 import com.example.ui.viewmodel.EduLockerViewModel
+import java.io.File
 
 data class SchoolItem(
     val id: String,
@@ -125,8 +135,19 @@ fun SearchDirectoryScreen(
     val posts by viewModel.socialPosts.collectAsState()
     val documents by viewModel.digitalDocuments.collectAsState()
     val selectedDoc by viewModel.selectedDocument.collectAsState()
+    val customAssets by viewModel.customProfileAssets.collectAsState()
+    val customPostImages by viewModel.customPostImages.collectAsState()
     val schoolPost = posts.firstOrNull()
     val context = LocalContext.current
+
+    val featuredPostPhotoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.updatePostPhoto("search_school_post_banner", uri)
+            Toast.makeText(context, "School post image updated!", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val allInstitutions = viewModel.allInstitutions
 
@@ -335,7 +356,7 @@ fun SearchDirectoryScreen(
                 }
 
                 if (filteredDocuments.isNotEmpty()) {
-                    Text("UDYAP Vault Documents", fontWeight = FontWeight.SemiBold, color = TextMuted, fontSize = 12.5.sp)
+                    Text("UDYAP Documents", fontWeight = FontWeight.SemiBold, color = TextMuted, fontSize = 12.5.sp)
                     Spacer(modifier = Modifier.height(8.dp))
                     filteredDocuments.forEach { doc ->
                         Surface(
@@ -401,8 +422,31 @@ fun SearchDirectoryScreen(
                             .weight(1f)
                             .clickable { onNavigateToSchoolProfile() }
                     ) {
-                        // Authentic School Seal Emblem
-                        SchoolSealEmblem(modifier = Modifier.size(44.dp))
+                        // School Emblem (Custom if uploaded, otherwise Red UDYAP default)
+                        val schoolAvatarUri = customAssets["avatar_school"]
+                            ?: customAssets.entries.firstOrNull { it.key.startsWith("avatar_school_") }?.value
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (!schoolAvatarUri.isNullOrEmpty() && File(schoolAvatarUri).exists()) {
+                                AsyncImage(
+                                    model = File(schoolAvatarUri),
+                                    contentDescription = "School Emblem",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(id = R.drawable.udyap_red_banner),
+                                    contentDescription = "UDYAP School Emblem",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
 
                         Column {
                             Row(
@@ -460,27 +504,50 @@ fun SearchDirectoryScreen(
 
                     Icon(
                         imageVector = Icons.Filled.MoreHoriz,
-                        contentDescription = "More options",
+                        contentDescription = "Change post photo",
                         tint = TextDark,
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                Toast.makeText(context, "Save post • Report • Visit School Profile", Toast.LENGTH_SHORT).show()
+                                featuredPostPhotoPicker.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
                             }
                     )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Campus Photo Card (Lush Green Odisha School Campus matching 11_fed48d83.png)
+                // Campus Post Photo Card (Defaults to Red UDYAP Banner; tap to change photo)
+                val featuredPostUri = customPostImages["search_school_post_banner"]
+                    ?: customAssets["banner_school"]
+                    ?: customAssets.entries.firstOrNull { it.key.startsWith("banner_school_") }?.value
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(210.dp)
                         .clip(RoundedCornerShape(18.dp))
-                        .clickable { onNavigateToSchoolProfile() }
+                        .clickable {
+                            featuredPostPhotoPicker.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                 ) {
-                    SchoolCampusArtwork(modifier = Modifier.fillMaxSize())
+                    if (!featuredPostUri.isNullOrEmpty() && File(featuredPostUri).exists()) {
+                        AsyncImage(
+                            model = File(featuredPostUri),
+                            contentDescription = "School Campus Post",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.udyap_red_banner),
+                            contentDescription = "Default UDYAP Post Banner",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -604,13 +671,14 @@ fun SearchDirectoryScreen(
 
                 Spacer(modifier = Modifier.height(22.dp))
 
-                // 2. "Resources" SECTION (Exact 2x5 Soft Peach Rounded-Square Tiles from 11_fed48d83.png)
+                // 2. "Resources" SECTION
                 Text(
                     text = "Resources",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    fontFamily = DmSansFontFamily,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 23.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -705,10 +773,11 @@ fun SearchDirectoryScreen(
                 // 3. "Scholarships" SECTION
                 Text(
                     text = "Scholarships",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    fontFamily = DmSansFontFamily,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 23.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

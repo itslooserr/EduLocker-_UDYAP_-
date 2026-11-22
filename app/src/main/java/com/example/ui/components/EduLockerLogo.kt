@@ -63,7 +63,7 @@ fun EduLockerBrandHeader(
         if (showSubtitle) {
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "Unified Digital Youth Advancement Platform — Govt. of Odisha.",
+                text = "Unified Digital Youth Advancement Platform.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextMuted,
                 fontSize = 14.sp

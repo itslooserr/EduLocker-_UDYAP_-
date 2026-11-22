@@ -11,6 +11,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -77,7 +78,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -85,6 +88,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.R
 import com.example.ui.screens.social.AllDeadlinesDialog
 import com.example.ui.screens.social.AllGKNewsDialog
 import com.example.ui.screens.social.AllRevisionNotesDialog
@@ -1224,24 +1228,25 @@ fun SocialFeedScreen(
                         .fillMaxWidth()
                         .height(196.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(
-                            Brush.linearGradient(
-                                listOf(Color(0xFF8C97A4), Color(0xFF6B7785), Color(0xFF475569))
-                            )
-                        )
                 ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawCircle(
-                            color = UdyapCrimson.copy(alpha = 0.22f),
-                            radius = size.width * 0.35f,
-                            center = Offset(size.width * 0.85f, size.height * 0.2f)
-                        )
-                        drawCircle(
-                            color = PureWhite.copy(alpha = 0.12f),
-                            radius = size.width * 0.28f,
-                            center = Offset(size.width * 0.18f, size.height * 0.82f)
-                        )
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.udyap_red_banner),
+                        contentDescription = "UDYAP Featured Banner",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.Black.copy(alpha = 0.15f),
+                                        Color.Black.copy(alpha = 0.72f)
+                                    )
+                                )
+                            )
+                    )
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -1268,7 +1273,7 @@ fun SocialFeedScreen(
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Discover Smart Vault, Disha AI & Live Scholarships",
+                                    text = "Discover UDYAP, Disha AI & Live Scholarships",
                                     color = PureWhite,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 17.sp,
@@ -1316,10 +1321,11 @@ fun SocialFeedScreen(
             ) {
                 Text(
                     text = "Creates",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 23.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
                 Text(
                     text = "more",
@@ -1340,14 +1346,6 @@ fun SocialFeedScreen(
                 "Smart Board Revision Hacks..",
                 "Free Govt Tech Courses 2026"
             )
-            val createGradients = listOf(
-                listOf(Color(0xFF44392F), Color(0xFF1F1915)),
-                listOf(Color(0xFF283747), Color(0xFF0E141B)),
-                listOf(Color(0xFF6DD5ED), Color(0xFF39A7C9)),
-                listOf(Color(0xFFB85419), Color(0xFF3D1C08)),
-                listOf(Color(0xFF831843), Color(0xFF3B0764)),
-                listOf(Color(0xFF0F766E), Color(0xFF115E59))
-            )
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(shortsList.take(6).size) { index ->
@@ -1357,10 +1355,27 @@ fun SocialFeedScreen(
                             .width(114.dp)
                             .height(174.dp)
                             .clip(RoundedCornerShape(14.dp))
-                            .background(Brush.verticalGradient(createGradients[index % createGradients.size]))
                             .clickable { selectedShortsIndex = index }
-                            .padding(10.dp)
                     ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.udyap_red_banner),
+                            contentDescription = createTitles[index % createTitles.size],
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.Black.copy(alpha = 0.55f),
+                                            Color.Black.copy(alpha = 0.15f),
+                                            Color.Black.copy(alpha = 0.65f)
+                                        )
+                                    )
+                                )
+                        )
                         Text(
                             text = createTitles[index % createTitles.size],
                             color = PureWhite,
@@ -1369,12 +1384,16 @@ fun SocialFeedScreen(
                             lineHeight = 15.5.sp,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.align(Alignment.TopStart)
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(10.dp)
                         )
                         Text(
                             text = shortItem.centralEmoji,
-                            fontSize = 36.sp,
-                            modifier = Modifier.align(Alignment.BottomEnd)
+                            fontSize = 28.sp,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(10.dp)
                         )
                     }
                 }
@@ -1390,10 +1409,11 @@ fun SocialFeedScreen(
             ) {
                 Text(
                     text = "Contents",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 23.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
                 Text(
                     text = "more",
@@ -1428,18 +1448,24 @@ fun SocialFeedScreen(
                                 .fillMaxWidth()
                                 .height(98.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Brush.linearGradient(vid.gradientColors))
-                                .padding(10.dp)
                         ) {
-                            Text(
-                                text = vid.iconEmoji,
-                                fontSize = 30.sp,
-                                modifier = Modifier.align(Alignment.Center)
+                            Image(
+                                painter = painterResource(id = R.drawable.udyap_red_banner),
+                                contentDescription = shortTitle,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black.copy(alpha = 0.30f))
                             )
                             Surface(
                                 shape = RoundedCornerShape(4.dp),
-                                color = Color(0xAA000000),
-                                modifier = Modifier.align(Alignment.BottomEnd)
+                                color = Color(0xBB000000),
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(8.dp)
                             ) {
                                 Text(
                                     text = vid.durationText,
@@ -1479,10 +1505,11 @@ fun SocialFeedScreen(
             ) {
                 Text(
                     text = "Official Updates",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 21.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
                 Text(
                     text = "more",

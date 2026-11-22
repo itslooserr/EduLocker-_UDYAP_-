@@ -168,7 +168,7 @@ fun OnboardingScreen(
             )
         }
 
-        // 3. BOTTOM-RIGHT ACTION BUTTON: Double-Border Pill (Exact from 2.png - 7.png)
+        // 3. BOTTOM-RIGHT ACTION BUTTON: Minimal Crimson Pill
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -177,9 +177,7 @@ fun OnboardingScreen(
         ) {
             Surface(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(36.dp))
-                    .border(1.5.dp, Color(0xFF1E293B), RoundedCornerShape(36.dp))
-                    .padding(3.5.dp)
+                    .clip(RoundedCornerShape(32.dp))
                     .clickable { onNext() },
                 shape = RoundedCornerShape(32.dp),
                 color = Color(0xFFF21147)

@@ -1,6 +1,7 @@
 package com.example.ui.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -84,6 +85,8 @@ data class InstitutionDetail(
 
 class EduLockerViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: EduLockerRepository
+    private val sessionPrefs = application.getSharedPreferences("udyap_session_prefs", Context.MODE_PRIVATE)
+    private val savedLoggedIn = sessionPrefs.getBoolean("is_logged_in", false)
 
     init {
         val database = EduLockerDatabase.getDatabase(application)
@@ -93,8 +96,8 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    // Navigation State
-    private val _currentPage = MutableStateFlow(1) // 1 to 42
+    // Navigation State — if user already logged in once, launch directly into Home (page 11) until app data is cleared or user logs out
+    private val _currentPage = MutableStateFlow(if (savedLoggedIn) 11 else 1)
     val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
 
     private val _currentTab = MutableStateFlow(NavTab.HOME)
@@ -105,7 +108,20 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
     var enteredFullName = MutableStateFlow("Laxmikant Nayak")
     var enteredOtp = MutableStateFlow("4819")
     var enteredPin = MutableStateFlow("1418")
-    var isLoggedIn = MutableStateFlow(true)
+    var isLoggedIn = MutableStateFlow(savedLoggedIn)
+
+    fun completeLogin() {
+        sessionPrefs.edit().putBoolean("is_logged_in", true).apply()
+        isLoggedIn.value = true
+        navigateToPage(11)
+    }
+
+    fun logout() {
+        sessionPrefs.edit().putBoolean("is_logged_in", false).apply()
+        isLoggedIn.value = false
+        _currentTab.value = NavTab.HOME
+        _currentPage.value = 8
+    }
 
     // Scholarship Flow Form State
     var scholarshipMobile = MutableStateFlow("+91 98610 54321")
@@ -553,7 +569,7 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
             id = "rec_olympiad",
             title = "Olympiad Mastery",
             badge = "🌟 Gold Series",
-            subtitle = "Science & Math State Gold Series",
+            subtitle = "Science & Math State Gold Series drills",
             category = "Competition",
             readTime = "6 min read • Mock Tests",
             rating = "4.9 ★",
@@ -582,21 +598,161 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
                 "Live weekly doubt clearance sessions",
                 "Official state recommendation letter"
             )
+        ),
+        RecommendationItem(
+            id = "rec_smart_notes",
+            title = "Smart Notes Hub",
+            badge = "📘 Fast Revision",
+            subtitle = "AI-condensed formula sheets & board mindmaps",
+            category = "Study Notes",
+            readTime = "3 min read • PDF",
+            rating = "4.9 ★",
+            bannerGradient = listOf(0xFF047857, 0xFF059669, 0xFF34D399),
+            backgroundColor = 0xFFD1FAE5,
+            description = "High-yield revision sheets covering CHSE & CBSE Physics, Chemistry, Math, and Computer Science in crisp 1-page visual summaries.",
+            syllabusTopics = listOf(
+                "Electrostatics & Magnetism Formula Matrix",
+                "Named Organic Reactions Visual Map",
+                "Definite Integration & Vectors Quick Tricks",
+                "SQL, Python & Kotlin Syntax Cheatsheet"
+            ),
+            roadmapSteps = listOf(
+                "Step 1: Pick your upcoming chapter test",
+                "Step 2: 10-minute active recall scan",
+                "Step 3: Solve 15 high-probability MCQs"
+            ),
+            topColleges = listOf(
+                "Govt. Higher Secondary School, Phulbani",
+                "Ravenshaw University",
+                "BJB Autonomous College"
+            ),
+            scholarshipGrant = "Free Offline Study Pack for Verified Students",
+            keyBenefits = listOf(
+                "Works completely offline on device",
+                "Aligned with 2026-27 exam blueprint",
+                "Handcrafted by top educators"
+            )
+        ),
+        RecommendationItem(
+            id = "rec_internships",
+            title = "Internship Radar",
+            badge = "💼 Live Roles",
+            subtitle = "Verified student internships & real projects",
+            category = "Career Launch",
+            readTime = "4 min read • Stipend",
+            rating = "4.8 ★",
+            bannerGradient = listOf(0xFF9D174D, 0xFFDB2777, 0xFFF472B6),
+            backgroundColor = 0xFFFCE7F3,
+            description = "Curated remote and hybrid internships for high-school and college builders across software, UI design, research, and campus ambassadorship.",
+            syllabusTopics = listOf(
+                "Building a Standout Student GitHub & Resume",
+                "Applying with Verified UDYAP Credentials",
+                "Interview Prep & Mini Capstone Tasks",
+                "Stipend & Experience Letter Verification"
+            ),
+            roadmapSteps = listOf(
+                "Step 1: Complete 1 verified skill badge",
+                "Step 2: Apply directly with UDYAP ID",
+                "Step 3: Join mentor-guided project sprint"
+            ),
+            topColleges = listOf(
+                "IIT Bhubaneswar TBI",
+                "NIT Rourkela Innovation Hub",
+                "STPI Bhubaneswar"
+            ),
+            scholarshipGrant = "Stipends from ₹5,000 to ₹18,000 / month",
+            keyBenefits = listOf(
+                "Zero fake listings — 100% verified",
+                "Beginner-friendly weekend schedules",
+                "Verified certificate added to profile"
+            )
+        ),
+        RecommendationItem(
+            id = "rec_exam_deadlines",
+            title = "Exam Deadlines",
+            badge = "⏰ Live Tracker",
+            subtitle = "Track JEE, NEET, CUET & OJEE form dates live",
+            category = "Admissions",
+            readTime = "2 min read • Alerts",
+            rating = "5.0 ★",
+            bannerGradient = listOf(0xFFB45309, 0xFFD97706, 0xFFFBBF24),
+            backgroundColor = 0xFFFEF9C3,
+            description = "Never miss an entrance registration window, admit card drop, or state counseling date with automated reminders tailored to your class.",
+            syllabusTopics = listOf(
+                "JEE Main Session 1 & 2 Registration Checklist",
+                "NEET UG & NISER NEST Eligibility Guide",
+                "CUET UG Central University Counseling",
+                "OJEE & SAMS Odisha Seat Allotment Timeline"
+            ),
+            roadmapSteps = listOf(
+                "Step 1: Keep Aadhaar & Marksheet synced",
+                "Step 2: Enable 7-day deadline reminders",
+                "Step 3: Auto-fill details via UDYAP ID"
+            ),
+            topColleges = listOf(
+                "NISER Bhubaneswar",
+                "AIIMS Bhubaneswar",
+                "IIT Bhubaneswar"
+            ),
+            scholarshipGrant = "Exam Fee Waiver Eligibility Checker",
+            keyBenefits = listOf(
+                "Real-time official date updates",
+                "Document checklist per exam",
+                "Zero missed deadlines"
+            )
+        ),
+        RecommendationItem(
+            id = "rec_mentor_connect",
+            title = "Mentor Connect",
+            badge = "🤝 1-on-1 Guide",
+            subtitle = "Guided advice from state toppers & faculty",
+            category = "Mentorship",
+            readTime = "5 min read • Live",
+            rating = "4.9 ★",
+            bannerGradient = listOf(0xFF0E7490, 0xFF0891B2, 0xFF22D3EE),
+            backgroundColor = 0xFFCFFAFE,
+            description = "Book quick doubt-clearing sessions and career check-ins with verified Odisha board toppers, IIT/NIT seniors, and subject faculty.",
+            syllabusTopics = listOf(
+                "How to Balance Boards & Competitive Prep",
+                "Choosing the Right Branch After Class 12",
+                "Overcoming Exam Anxiety & Daily Routines",
+                "Scholarship Essay & Project Review"
+            ),
+            roadmapSteps = listOf(
+                "Step 1: Choose your subject or goal",
+                "Step 2: Pick an available mentor slot",
+                "Step 3: Get a personalized action checklist"
+            ),
+            topColleges = listOf(
+                "IIT Bhubaneswar Alumni Network",
+                "NIT Rourkela Student Mentors",
+                "CHSE Odisha Toppers Circle"
+            ),
+            scholarshipGrant = "100% Free Mentorship Access",
+            keyBenefits = listOf(
+                "Verified seniors & state faculty",
+                "Actionable weekly feedback",
+                "Odia, Hindi & English support"
+            )
         )
     )
 
     val recommendationsRow1 = listOf(
-        allRecommendations[0], // Learning Era
-        allRecommendations[1], // Best for you
-        allRecommendations[3], // Right path selector
-        allRecommendations[5]  // AI Skill Track
+        allRecommendations[0],  // Learning Era
+        allRecommendations[1],  // Best for you
+        allRecommendations[8],  // Smart Notes Hub
+        allRecommendations[5],  // AI Skill Track
+        allRecommendations[10], // Exam Deadlines
+        allRecommendations[2]   // Best thing
     )
 
     val recommendationsRow2 = listOf(
-        allRecommendations[4], // Out of brain Quest
-        allRecommendations[2], // Best thing
-        allRecommendations[6], // Scholarship Hub
-        allRecommendations[7]  // Olympiad Mastery
+        allRecommendations[3],  // Right path selector
+        allRecommendations[4],  // Out of brain Quest
+        allRecommendations[9],  // Internship Radar
+        allRecommendations[6],  // Scholarship Hub
+        allRecommendations[7],  // Olympiad Mastery
+        allRecommendations[11]  // Mentor Connect
     )
 
     private val _selectedRecommendation = MutableStateFlow<RecommendationItem?>(allRecommendations[0])
@@ -731,6 +887,18 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setAiChatOpen(isOpen: Boolean) {
         isAiChatOpen.value = isOpen
+    }
+
+    fun clearAiChat() {
+        aiMessages.value = listOf(
+            AiMessage(
+                sender = "Disha AI",
+                text = "Namaskar ${studentProfile.value?.fullName?.substringBefore(" ") ?: "Laxmikant"}! I am Disha, your UDYAP AI Assistant. Ask me anything about your scholarship eligibility, Olympiad exam dates, APAAR ID, or developer courses.",
+                isUser = false,
+                timestamp = "Just now"
+            )
+        )
+        isAiThinking.value = false
     }
 
     fun setStoryOpen(isOpen: Boolean) {
@@ -1022,16 +1190,22 @@ class EduLockerViewModel(application: Application) : AndroidViewModel(applicatio
                 "The State Icon Olympiad Trophy Series starts on 10 Dec 2026 with a ₹50,000 prize pool. Subjects include Mathematics, Geometry in Action, and Physics. You are already registered with Student ID ODIST-KMD-PLBM-LNO01."
 
             "hp life" in q || "course" in q || "web dev" in q || "developer" in q ->
-                "You are enrolled in the HP LIFE Developer Program: 'Introduction to Web Development' (Progress: 1/17). Upon finishing all 17 lessons and the capstone challenge, your official verifiable certificate will automatically appear in your UDYAP Vault."
+                "You are enrolled in the UDYAP Developer Program: 'Introduction to Web Development' (Progress: 1/17). Upon finishing all 17 lessons and the capstone challenge, your official verifiable certificate will automatically appear in your UDYAP Documents."
 
             "apaar" in q || "marksheet" in q || "document" in q ->
-                "All your academic documents (Class X Marksheet BSE 2024, Class XI Marksheet CHSE 2025, APAAR ID, and Aadhaar) are cryptographically signed with SHA-256 integrity hashes on the Odisha State Block-Locker network."
+                "All your academic documents (Class X Marksheet BSE 2024, Class XI Marksheet CHSE 2025, APAAR ID, and Aadhaar) are cryptographically signed with SHA-256 integrity hashes on UDYAP."
 
             "school" in q || "phulbani" in q ->
                 "Govt. Higher Secondary School, Phulbani (School ID: GHSSP-PLBM-KMD-ODIST, AOR 56) offers 350 Science seats, 200 Commerce seats, 400 Arts seats, and 290 hostel accommodation capacity."
 
+            "quiz" in q || "test" in q ->
+                "Quick 3-Question Science & Logic Sprint:\n\n1. What is the SI unit of electric flux?\n   A) Weber  B) N·m²/C  C) Tesla  D) Volt\n\n2. Which data structure uses LIFO order?\n   A) Queue  B) Stack  C) Tree  D) Graph\n\nReply with your answers (e.g., 1B, 2B) and I'll score you instantly!"
+
+            "plan" in q || "prepare" in q || "jee" in q || "chse" in q ->
+                "Here is your smart 7-day study split:\n• Morning (6:00–8:00 AM): High-weightage Physics & Math concepts + 15 PYQs\n• Afternoon (4:30–6:00 PM): CHSE Board long answers & organic mechanisms\n• Night (8:30–9:30 PM): 20-min flashcard recall + quick mock quiz on UDYAP."
+
             else ->
-                "UDYAP gives you a unified ecosystem for all Odisha student services. You can track your scholarships, verify biometric KYC, download tamper-proof marksheets, and earn global certifications from HP LIFE!"
+                "UDYAP brings your academic life into one place — track scholarships, verify digital documents, take developer courses, and get personalized study plans anytime. Tell me your exact goal and I'll map out your next steps!"
         }
     }
 

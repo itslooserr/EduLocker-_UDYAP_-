@@ -113,11 +113,10 @@ fun DocumentViewerDialog(
                 modifier = Modifier
                     .fillMaxWidth(0.94f)
                     .padding(vertical = 20.dp)
-                    .clickable(enabled = false) {}
-                    .border(1.5.dp, DarkBorder, RoundedCornerShape(24.dp)),
+                    .clickable(enabled = false) {},
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = PureWhite),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -126,64 +125,28 @@ fun DocumentViewerDialog(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Header Bar
+                    // Clean Header Bar: Only UDYAP Logo on left + plain X close icon on right
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            EduLockerDualCircleLogo(size = 36.dp)
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(
-                                        text = "UDYAP Digital Vault",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextDark,
-                                        fontSize = 15.sp
-                                    )
-                                    Icon(
-                                        imageVector = Icons.Filled.CheckCircle,
-                                        contentDescription = "Verified",
-                                        tint = SuccessGreenDark,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                Text(
-                                    text = "Govt. of Odisha • Official Citizen Record",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = OdishaMagentaDark,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 11.sp
-                                )
-                            }
-                        }
+                        EduLockerDualCircleLogo(size = 32.dp)
 
                         IconButton(
                             onClick = onDismiss,
-                            modifier = Modifier
-                                .size(34.dp)
-                                .clip(CircleShape)
-                                .background(SoftBlushPink.copy(alpha = 0.5f))
-                                .border(1.dp, DarkBorder.copy(alpha = 0.2f), CircleShape)
+                            modifier = Modifier.size(44.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
                                 contentDescription = "Close",
                                 tint = TextDark,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(22.dp)
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     // Realistic Document Representation
                     when (doc.id.lowercase()) {
@@ -304,9 +267,9 @@ fun DocumentViewerDialog(
                             },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(50.dp)
-                                .border(1.5.dp, DarkBorder, RoundedCornerShape(16.dp)),
-                            shape = RoundedCornerShape(16.dp)
+                                .height(50.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE2E8F0))
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Share,
@@ -324,8 +287,7 @@ fun DocumentViewerDialog(
                             },
                             modifier = Modifier
                                 .weight(1.3f)
-                                .height(50.dp)
-                                .border(1.5.dp, DarkBorder, RoundedCornerShape(16.dp)),
+                                .height(50.dp),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
                         ) {

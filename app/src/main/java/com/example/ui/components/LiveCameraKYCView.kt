@@ -444,8 +444,7 @@ fun RealtimeLiveCameraKYCView(
                 onClick = { isScanningStarted = true },
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
-                    .height(52.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(52.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {

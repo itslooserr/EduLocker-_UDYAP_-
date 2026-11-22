@@ -111,7 +111,6 @@ fun ScholarshipStep1Screen(
                     .size(42.dp)
                     .clip(CircleShape)
                     .background(PureWhite)
-                    .border(1.5.dp, DarkBorder, CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -265,8 +264,7 @@ fun ScholarshipStep1Screen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.65f)
-                    .height(52.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(52.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {
@@ -411,8 +409,7 @@ fun ScholarshipStep2UidaiScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 36.dp)
                 .fillMaxWidth(0.55f)
-                .height(52.dp)
-                .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                .height(52.dp),
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
         ) {
@@ -497,8 +494,7 @@ fun ScholarshipStep4SuccessScreen(
                 modifier = Modifier
                     .size(110.dp)
                     .clip(CircleShape)
-                    .background(SoftBlushPink)
-                    .border(2.dp, DarkBorder, CircleShape),
+                    .background(SoftBlushPink),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -538,8 +534,7 @@ fun ScholarshipStep4SuccessScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 36.dp)
                 .fillMaxWidth(0.55f)
-                .height(52.dp)
-                .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                .height(52.dp),
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
         ) {
@@ -838,8 +833,7 @@ fun ScholarshipStep5FormScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.55f)
-                    .height(52.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(52.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {
@@ -984,8 +978,7 @@ fun ScholarshipStep6ConsentScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.55f)
-                    .height(52.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(52.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {
@@ -1063,9 +1056,9 @@ fun ScholarshipStep7FeeScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.55f)
                     .height(50.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp))
                     .clip(RoundedCornerShape(30.dp))
                     .clickable { onDraftAndExit() },
+                shape = RoundedCornerShape(30.dp),
                 color = Color(0xFF1E293B)
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -1082,8 +1075,7 @@ fun ScholarshipStep7FeeScreen(
                 onClick = onPayAndSubmit,
                 modifier = Modifier
                     .fillMaxWidth(0.55f)
-                    .height(50.dp)
-                    .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                    .height(50.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
             ) {
@@ -1304,8 +1296,7 @@ fun ScholarshipStep10SubmittedScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 36.dp)
                 .fillMaxWidth(0.55f)
-                .height(52.dp)
-                .border(2.dp, DarkBorder, RoundedCornerShape(30.dp)),
+                .height(52.dp),
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(containerColor = OdishaMagenta)
         ) {

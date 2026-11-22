@@ -3,30 +3,44 @@ package com.example.ui.screens
 import android.content.Intent
 import android.speech.RecognizerIntent
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -35,6 +49,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -44,6 +59,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -54,12 +70,13 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.NorthEast
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -84,24 +101,27 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.filled.School
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -178,325 +198,298 @@ fun GuideAIScreen(
             .fillMaxSize()
             .background(PureWhite)
     ) {
+        // 2-SECTION SPLIT LAYOUT:
+        // Top Section pinned cleanly to Top; Bottom Disha Ask Dock pinned cleanly to Bottom; flexible breathing gap in the middle!
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 1. CLEAN HEADER: Ai Smart Think / Your Networks (Exact from 12_1654c8b5.png)
-            Text(
-                text = "Ai Smart Think",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = TextDark,
-                fontSize = 21.sp
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = "Your Networks",
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextMuted,
-                fontSize = 13.5.sp
-            )
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // 2. 2x3 GRID OF SOFT PEACH PILL BUTTONS (Exact from 12_1654c8b5.png)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            // =================================================================
+            // TOP SECTION (Aligned to TOP; scrollable on compact viewports)
+            // =================================================================
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
             ) {
-                NetworkPillButton("My Learning", Modifier.weight(1f)) { activeNetworkType = "My Learning" }
-                NetworkPillButton("MY Applications", Modifier.weight(1f)) { activeNetworkType = "MY Applications" }
-            }
-            Spacer(modifier = Modifier.height(11.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                NetworkPillButton("Internships", Modifier.weight(1f)) { activeNetworkType = "Internships" }
-                NetworkPillButton("Job Eligibility", Modifier.weight(1f)) { activeNetworkType = "Job Eligibility" }
-            }
-            Spacer(modifier = Modifier.height(11.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                NetworkPillButton("Recognition", Modifier.weight(1f)) { activeNetworkType = "Recognition" }
-                NetworkPillButton("+  More", Modifier.weight(1f)) { activeNetworkType = "More Opportunities" }
-            }
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Spacer(modifier = Modifier.height(14.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    // 1. CLEAN HEADER: Ai Smart Think / Your Networks
+                    Text(
+                        text = "Ai Smart Think",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TextDark,
+                        fontSize = 20.sp,
+                        letterSpacing = (-0.2).sp
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "Your Networks",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextMuted,
+                        fontSize = 13.5.sp
+                    )
 
-            // 3. ✨ Recommended for You (Exact pastel card layout from 12_1654c8b5.png)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(text = "✨", fontSize = 19.sp)
-                Text(
-                    text = "Recommended for You",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Normal,
-                    color = TextDark,
-                    fontSize = 20.sp
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 2. 2x3 GRID OF SOFT PEACH PILL BUTTONS
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        NetworkPillButton("My Learning", Modifier.weight(1f)) { activeNetworkType = "My Learning" }
+                        NetworkPillButton("MY Applications", Modifier.weight(1f)) { activeNetworkType = "MY Applications" }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        NetworkPillButton("Internships", Modifier.weight(1f)) { activeNetworkType = "Internships" }
+                        NetworkPillButton("Job Eligibility", Modifier.weight(1f)) { activeNetworkType = "Job Eligibility" }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        NetworkPillButton("Recognition", Modifier.weight(1f)) { activeNetworkType = "Recognition" }
+                        NetworkPillButton("+  More", Modifier.weight(1f)) { activeNetworkType = "More Opportunities" }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // 3. ✨ Recommended for You Header
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(text = "✨", fontSize = 18.sp)
+                        Text(
+                            text = "Recommended for You",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextDark,
+                            fontSize = 19.sp,
+                            letterSpacing = (-0.2).sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                // Dual Opposing Slow-Moving Uniform Marquee Rows (Top: Left -> Right, Bottom: Right -> Left)
+                RecommendedDualMovingCarousel(
+                    row1Items = viewModel.recommendationsRow1,
+                    row2Items = viewModel.recommendationsRow2,
+                    onItemClick = { item -> viewModel.selectRecommendation(item) }
                 )
+
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 4. DISCLAIMER: Graduation Cap + "Disha can make mistakes."
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.School,
+                            contentDescription = null,
+                            tint = Color(0xFF7B7B7B),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "Disha can make mistakes.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextMuted,
+                            fontSize = 12.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // 5. STACKED MINT-GREEN QUIZ PROMPT CARD
+                    if (showQuizBanner) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 2.dp, vertical = 4.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 14.dp)
+                                    .height(20.dp)
+                                    .align(Alignment.BottomCenter)
+                                    .offset(y = 6.dp)
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(UdyapStackPink)
+                            )
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        viewModel.askRunwayAi("Start a quick 3-question interactive science & aptitude quiz for me!")
+                                        viewModel.setAiChatOpen(true)
+                                    },
+                                shape = RoundedCornerShape(16.dp),
+                                color = UdyapMintGreen
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 13.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "Hiee buddy! How's your day going ??\nLets try a QUIZ",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color(0xFF283629),
+                                        fontSize = 13.5.sp,
+                                        lineHeight = 19.sp,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = "Dismiss quiz card",
+                                        tint = Color(0xFF3E4C3F),
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .clickable { showQuizBanner = false }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+                }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Row 1: Horizontal Pastel Trio (Mint, Cream Yellow, Sky Blue)
-            Row(
+            // =================================================================
+            // BOTTOM SECTION (Pinned cleanly to Bottom with Middle Gap above)
+            // =================================================================
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .background(PureWhite)
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
             ) {
-                DishaPastelCard(
-                    title = "Learning",
-                    subtitle = "era of learn to grow",
-                    backgroundColor = Color(0xFFCEFBCE),
-                    modifier = Modifier.width(120.dp)
-                ) {
-                    viewModel.allRecommendations.getOrNull(0)?.let { viewModel.selectRecommendation(it) }
-                }
-                DishaPastelCard(
-                    title = "Best for you",
-                    subtitle = "Lets have a look on whats best for you today to do..",
-                    backgroundColor = UdyapYellowCard,
-                    modifier = Modifier.width(196.dp)
-                ) {
-                    viewModel.allRecommendations.getOrNull(1)?.let { viewModel.selectRecommendation(it) }
-                }
-                DishaPastelCard(
-                    title = "Best thing",
-                    subtitle = "The best thing not to do",
-                    backgroundColor = UdyapSkyCard,
-                    modifier = Modifier.width(136.dp)
-                ) {
-                    viewModel.allRecommendations.getOrNull(2)?.let { viewModel.selectRecommendation(it) }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Row 2: Two Equal-Width Pastel Cards (Soft Pink + Aqua Mint)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                DishaPastelCard(
-                    title = "Right path selector",
-                    subtitle = "Explore the new fields that are live now. lets see and analyz..",
-                    backgroundColor = UdyapPinkCard,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    viewModel.allRecommendations.getOrNull(3)?.let { viewModel.selectRecommendation(it) }
-                }
-                DishaPastelCard(
-                    title = "Out of brain Quest",
-                    subtitle = "Experience the new level of competition. learn more",
-                    backgroundColor = UdyapAquaCard,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    viewModel.allRecommendations.getOrNull(4)?.let { viewModel.selectRecommendation(it) }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // 4. DISCLAIMER: Graduation Cap + "Disha can make mistakes."
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.School,
-                    contentDescription = null,
-                    tint = Color(0xFF7B7B7B),
-                    modifier = Modifier.size(16.dp)
-                )
-                Text(
-                    text = "Disha can make mistakes.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted,
-                    fontSize = 12.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 5. STACKED MINT-GREEN QUIZ PROMPT CARD (Pink peeking below - Exact from 12_1654c8b5.png)
-            if (showQuizBanner) {
+                // 6. FLOATING DARK SPEECH BUBBLE
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp)
+                        .padding(horizontal = 12.dp)
+                        .testTag("disha_speech_bubble")
+                        .clickable { viewModel.setAiChatOpen(true) }
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 14.dp)
-                            .height(22.dp)
-                            .align(Alignment.BottomCenter)
-                            .offset(y = 7.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(UdyapStackPink)
-                    )
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .clickable {
-                                viewModel.askRunwayAi("Start a quick 3-question interactive science & aptitude quiz for me!")
-                                viewModel.setAiChatOpen(true)
-                            },
-                        shape = RoundedCornerShape(16.dp),
-                        color = UdyapMintGreen
-                    ) {
-                        Row(
+                    Column {
+                        Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .clip(RoundedCornerShape(16.dp)),
+                            shape = RoundedCornerShape(16.dp),
+                            color = UdyapDishaBubble
                         ) {
                             Text(
-                                text = "Hiee buddy! How's your day going ??\nLets try a QUIZ",
+                                text = "Any question? Let's explore it together.",
+                                color = PureWhite,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFF283629),
-                                fontSize = 13.5.sp,
-                                lineHeight = 19.sp,
-                                modifier = Modifier.weight(1f)
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+                                textAlign = TextAlign.Center
                             )
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = "Dismiss quiz card",
-                                tint = Color(0xFF3E4C3F),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .clickable { showQuizBanner = false }
-                            )
+                        }
+                        Canvas(
+                            modifier = Modifier
+                                .padding(start = 26.dp)
+                                .size(18.dp, 10.dp)
+                        ) {
+                            val pointerPath = Path().apply {
+                                moveTo(0f, 0f)
+                                lineTo(size.width, 0f)
+                                lineTo(0f, size.height)
+                                close()
+                            }
+                            drawPath(pointerPath, color = UdyapDishaBubble)
                         }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(34.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            // 6. FLOATING DARK SPEECH BUBBLE (Exact from 12_1654c8b5.png)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp)
-                    .testTag("disha_speech_bubble")
-                    .clickable { viewModel.setAiChatOpen(true) }
-            ) {
-                Column {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp)),
-                        shape = RoundedCornerShape(16.dp),
-                        color = UdyapDishaBubble
-                    ) {
-                        Text(
-                            text = "Any question? Let's explore it together.",
-                            color = PureWhite,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    Canvas(
-                        modifier = Modifier
-                            .padding(start = 26.dp)
-                            .size(18.dp, 12.dp)
-                    ) {
-                        val pointerPath = Path().apply {
-                            moveTo(0f, 0f)
-                            lineTo(size.width, 0f)
-                            lineTo(0f, size.height)
-                            close()
-                        }
-                        drawPath(pointerPath, color = UdyapDishaBubble)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 7. DISHA ASSISTANT BAR (Clean directly on pure white canvas - Exact from 12_1654c8b5.png)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                // 7. DISHA ASSISTANT BAR
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { viewModel.setAiChatOpen(true) }
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    RunwayHeadIcon(modifier = Modifier.size(56.dp))
-                    Column {
-                        Text(
-                            text = "Disha",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = TextDark,
-                            fontSize = 18.sp
-                        )
-                        Text(
-                            text = "Analyzing your session..",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextMuted,
-                            fontSize = 12.5.sp
-                        )
-                    }
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .testTag("disha_ask_button")
-                        .clickable { viewModel.setAiChatOpen(true) }
-                ) {
-                    Box(
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color(0xFF000000)),
-                        contentAlignment = Alignment.Center
+                            .weight(1f)
+                            .clickable { viewModel.setAiChatOpen(true) }
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Send,
-                            contentDescription = "Ask Disha",
-                            tint = PureWhite,
-                            modifier = Modifier.size(20.dp)
+                        RunwayHeadIcon(modifier = Modifier.size(54.dp))
+                        Column {
+                            Text(
+                                text = "Disha",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = TextDark,
+                                fontSize = 18.sp
+                            )
+                            Text(
+                                text = "Analyzing your session..",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted,
+                                fontSize = 12.5.sp
+                            )
+                        }
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .testTag("disha_ask_button")
+                            .clickable { viewModel.setAiChatOpen(true) }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color(0xFF0F0F12)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = "Ask Disha",
+                                tint = PureWhite,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(3.dp))
+                        Text(
+                            text = "Ask",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextDark,
+                            fontSize = 12.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Ask",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextDark,
-                        fontSize = 12.sp
-                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(22.dp))
         }
 
         // =================================================================
@@ -546,29 +539,37 @@ fun GuideAIScreen(
 }
 
 // =========================================================================
-// FULL-SCREEN AI CHATBOT PAGE (Exact Replica of image.png & image (1).png)
-// Styled to EduLocker Color Theme
+// FULL-SCREEN DISHA AI CHATBOT (Ethereal Pastel Aurora Mesh Design — UDYAP Matched)
 // =========================================================================
 @Composable
 fun FullScreenAiChatPage(
     viewModel: EduLockerViewModel,
     onClose: () -> Unit
 ) {
+    BackHandler { onClose() }
+
     val messages by viewModel.aiMessages.collectAsState()
     val isThinking by viewModel.isAiThinking.collectAsState()
+    val profile by viewModel.studentProfile.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
-    var selectedModel by remember { mutableStateOf("Quantum 3") }
+    val studentFirstName = remember(profile) {
+        (profile?.fullName ?: "Laxmikant").substringBefore(" ")
+    }
+    val hasUserMessages = remember(messages) { messages.any { it.isUser } }
+    val latestUserRequest = remember(messages) {
+        messages.lastOrNull { it.isUser }?.text ?: ""
+    }
+
+    var selectedModel by remember { mutableStateOf("Disha 3.0") }
     var showModelDropdown by remember { mutableStateOf(false) }
     var currentlySpeakingTimestamp by remember { mutableStateOf<String?>(null) }
 
     DisposableEffect(Unit) {
-        onDispose {
-            TextToSpeechHelper.stop()
-        }
+        onDispose { TextToSpeechHelper.stop() }
     }
 
     val speechRecognizerLauncher = rememberLauncherForActivityResult(
@@ -583,38 +584,107 @@ fun FullScreenAiChatPage(
         }
     }
 
-    val models = listOf("Disha 3.0", "UDYAP Pro 4.0", "State Career Advisor")
+    val models = listOf("Disha 3.0", "UDYAP Pro 4.0", "Career Advisor")
 
-    // Auto-scroll on new message
+    val quickMoodTopics = remember {
+        listOf(
+            Triple("Exam Prep", Color(0xFFFFF4CC), "Create a smart 7-day study plan for CHSE & JEE prep"),
+            Triple("Scholarships", Color(0xFFD9F7D9), "Which Odisha scholarships am I eligible to apply for right now?"),
+            Triple("Olympiad", Color(0xFFFCE0EB), "Tell me about the State Icon Olympiad Trophy dates & syllabus"),
+            Triple("Coding Track", Color(0xFFDCEEFF), "How do I complete the UDYAP Developer Program and earn my certificate?"),
+            Triple("Quick Quiz", Color(0xFFEDE4FF), "Give me a quick 3-question interactive science & logic quiz"),
+            Triple("APAAR & Docs", Color(0xFFFFE6D6), "Check the verification status of my APAAR ID and marksheets")
+        )
+    }
+
     LaunchedEffect(messages.size, isThinking) {
-        if (messages.isNotEmpty()) {
+        if (hasUserMessages && messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size)
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PureWhite)
-            .statusBarsPadding()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // 1. ETHEREAL PASTEL AURORA MESH BACKGROUND (UDYAP Rose-Blush + Peach + Lavender + Mint)
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+
+            // Soft luminous warm base
+            drawRect(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFF5D8E2),
+                        Color(0xFFF9E5DB),
+                        Color(0xFFFDF8F6),
+                        PureWhite
+                    )
+                )
+            )
+            // Soft Periwinkle-Lavender Glow (Top-Left)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFC5C8F5).copy(alpha = 0.72f), Color.Transparent),
+                    center = Offset(w * 0.14f, h * 0.08f),
+                    radius = w * 0.72f
+                ),
+                radius = w * 0.72f,
+                center = Offset(w * 0.14f, h * 0.08f)
+            )
+            // Soft Sage-Mint Glow (Top-Right)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFC6EBD1).copy(alpha = 0.75f), Color.Transparent),
+                    center = Offset(w * 0.90f, h * 0.14f),
+                    radius = w * 0.68f
+                ),
+                radius = w * 0.68f,
+                center = Offset(w * 0.90f, h * 0.14f)
+            )
+            // UDYAP Signature Rose-Blush Glow (Mid-Left)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(UdyapCrimson.copy(alpha = 0.28f), Color(0xFFF9B8C9).copy(alpha = 0.42f), Color.Transparent),
+                    center = Offset(w * 0.16f, h * 0.36f),
+                    radius = w * 0.75f
+                ),
+                radius = w * 0.75f,
+                center = Offset(w * 0.16f, h * 0.36f)
+            )
+            // Warm Sunlit Peach Glow (Center-Right)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFFCE0BC).copy(alpha = 0.72f), Color.Transparent),
+                    center = Offset(w * 0.82f, h * 0.42f),
+                    radius = w * 0.70f
+                ),
+                radius = w * 0.70f,
+                center = Offset(w * 0.82f, h * 0.42f)
+            )
+        }
+
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
         ) {
+            // 2. MINIMAL FROSTED TOP BAR
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 14.dp),
+                    .padding(horizontal = 18.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(
-                    onClick = onClose,
+                Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(PureWhite)
-                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(PureWhite.copy(alpha = 0.72f))
+                        .testTag("disha_chat_back_button")
+                        .clickable { onClose() },
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -624,421 +694,627 @@ fun FullScreenAiChatPage(
                     )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = PureWhite.copy(alpha = 0.68f)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(9.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFF00B843))
-                    )
-                    Text(
-                        text = "Disha AI Advisor",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = TextDark,
-                        fontSize = 16.sp
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(UdyapCrimson)
+                        )
+                        Text(
+                            text = "Disha AI",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = TextDark,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
 
-                IconButton(
-                    onClick = {
-                        Toast.makeText(context, "UDYAP Disha Model: $selectedModel", Toast.LENGTH_SHORT).show()
-                    },
+                Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(PureWhite)
-                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(PureWhite.copy(alpha = 0.72f))
+                        .testTag("disha_chat_reset_button")
+                        .clickable {
+                            viewModel.clearAiChat()
+                            Toast.makeText(context, "New conversation started", Toast.LENGTH_SHORT).show()
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.SmartToy,
-                        contentDescription = "Disha AI",
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = "New Chat",
                         tint = TextDark,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(19.dp)
                     )
                 }
             }
 
-            // -------------------------------------------------------------
-            // CHAT MESSAGES STREAM / EMPTY STATE
-            // -------------------------------------------------------------
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Header Space
-                item { Spacer(modifier = Modifier.height(10.dp)) }
-
-                // If only initial message or no user message yet, show the Geometric Hero Logo
-                if (messages.size <= 1) {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 40.dp, bottom = 20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Stylized Geometric AI Logo (from image.png)
-                            AiGeometricHeroLogo(size = 56.dp)
-                            Spacer(modifier = Modifier.height(18.dp))
-                            Text(
-                                text = "Good Morning, Laxmikant",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B),
-                                fontSize = 22.sp
-                            )
-                            Text(
-                                text = "How can I assist your studies & career journey today?",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFF64748B),
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-                }
-
-                items(messages) { message ->
-                    if (message.isUser) {
-                        // User message bubble (Clean dark slate pill / rounded)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Surface(
-                                shape = RoundedCornerShape(topStart = 18.dp, topEnd = 4.dp, bottomStart = 18.dp, bottomEnd = 18.dp),
-                                color = Color(0xFF0F172A),
-                                modifier = Modifier.fillMaxWidth(0.85f)
-                            ) {
-                                Text(
-                                    text = message.text,
-                                    color = PureWhite,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontSize = 14.sp,
-                                    lineHeight = 20.sp,
-                                    modifier = Modifier.padding(14.dp)
-                                )
-                            }
-                        }
-                    } else {
-                        // AI Assistant message box (Clean white card with action buttons)
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Surface(
-                                shape = RoundedCornerShape(18.dp),
-                                color = PureWhite,
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE2E8F0)),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(
-                                        text = message.text,
-                                        color = Color(0xFF1E293B),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontSize = 14.sp,
-                                        lineHeight = 21.sp
-                                    )
-
-                                    Spacer(modifier = Modifier.height(12.dp))
-
-                                    // Action bar: [Speaker] [Copy] [Thumbs Up]
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        val isSpeakingThis = currentlySpeakingTimestamp == message.timestamp
-                                        Icon(
-                                            imageVector = if (isSpeakingThis) Icons.Filled.Stop else Icons.Filled.GraphicEq,
-                                            contentDescription = if (isSpeakingThis) "Stop Audio" else "Read Aloud",
-                                            tint = if (isSpeakingThis) OdishaMagenta else Color(0xFF64748B),
-                                            modifier = Modifier
-                                                .size(18.dp)
-                                                .clickable {
-                                                    if (isSpeakingThis) {
-                                                        TextToSpeechHelper.stop()
-                                                        currentlySpeakingTimestamp = null
-                                                    } else {
-                                                        currentlySpeakingTimestamp = message.timestamp
-                                                        TextToSpeechHelper.speak(
-                                                            context = context,
-                                                            text = message.text,
-                                                            onStart = {
-                                                                currentlySpeakingTimestamp = message.timestamp
-                                                            },
-                                                            onDone = {
-                                                                currentlySpeakingTimestamp = null
-                                                            }
-                                                        )
-                                                    }
-                                                }
-                                        )
-                                        Icon(
-                                            imageVector = Icons.Filled.ContentCopy,
-                                            contentDescription = "Copy Text",
-                                            tint = Color(0xFF64748B),
-                                            modifier = Modifier
-                                                .size(18.dp)
-                                                .clickable {
-                                                    clipboardManager.setText(AnnotatedString(message.text))
-                                                    Toast.makeText(context, "Copied to clipboard!", Toast.LENGTH_SHORT).show()
-                                                }
-                                        )
-                                        Icon(
-                                            imageVector = Icons.Filled.ThumbUp,
-                                            contentDescription = "Helpful",
-                                            tint = Color(0xFF64748B),
-                                            modifier = Modifier
-                                                .size(18.dp)
-                                                .clickable {
-                                                    Toast.makeText(context, "Thank you for the feedback!", Toast.LENGTH_SHORT).show()
-                                                }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // AI Thinking Indicator
-                if (isThinking) {
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(start = 8.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                color = OdishaMagenta,
-                                strokeWidth = 2.dp
-                            )
-                            Text(
-                                text = "Disha AI is thinking...",
-                                color = Color(0xFF64748B),
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-
-                item { Spacer(modifier = Modifier.height(20.dp)) }
-            }
-
-            // -------------------------------------------------------------
-            // BOTTOM PROMPT BAR (Exact from image.png & image (1).png)
-            // -------------------------------------------------------------
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
-                color = PureWhite,
-                shadowElevation = 8.dp
-            ) {
+            // 3. MAIN CONTENT AREA: WELCOME HERO vs ACTIVE CONVERSATION SHEET
+            if (!hasUserMessages) {
+                // --- WELCOME HERO STATE ---
                 Column(
                     modifier = Modifier
+                        .weight(1f)
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(horizontal = 22.dp)
                 ) {
-                    // Input TextField
-                    OutlinedTextField(
-                        value = inputText,
-                        onValueChange = { inputText = it },
-                        placeholder = {
-                            Text(
-                                text = "Ask anything about careers, scholarships & exams..",
-                                color = Color(0xFF94A3B8),
-                                fontSize = 13.5.sp
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF8FAFC),
-                            unfocusedContainerColor = Color(0xFFF8FAFC),
-                            focusedIndicatorColor = Color(0xFFE2E8F0),
-                            unfocusedIndicatorColor = Color(0xFFE2E8F0),
-                            cursorColor = OdishaMagenta
-                        ),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                        keyboardActions = KeyboardActions(
-                            onSend = {
-                                if (inputText.isNotBlank()) {
-                                    viewModel.askRunwayAi(inputText)
-                                    inputText = ""
-                                }
-                            }
-                        ),
-                        maxLines = 3
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    Text(
+                        text = "Hi, $studentFirstName!",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF3F2D36).copy(alpha = 0.80f),
+                        fontSize = 16.sp
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // Media Action Icons & Send Control Row (image (1).png)
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // Left Media Buttons: [Plus] [Image] [Attach] [Video]
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(14.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = "Add",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .clickable {
-                                        Toast.makeText(context, "Attach documents or marksheet..", Toast.LENGTH_SHORT).show()
-                                    }
-                            )
-                            Icon(
-                                imageVector = Icons.Filled.Image,
-                                contentDescription = "Image Upload",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable {
-                                        Toast.makeText(context, "Select photo from gallery", Toast.LENGTH_SHORT).show()
-                                    }
-                            )
-                            Icon(
-                                imageVector = Icons.Filled.AttachFile,
-                                contentDescription = "Attach File",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable {
-                                        Toast.makeText(context, "Browse certificate PDF", Toast.LENGTH_SHORT).show()
-                                    }
-                            )
-                            Icon(
-                                imageVector = Icons.Filled.Videocam,
-                                contentDescription = "Video",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .clickable {
-                                        Toast.makeText(context, "Video lecture query mode", Toast.LENGTH_SHORT).show()
-                                    }
-                            )
-                        }
+                    Text(
+                        text = "What do you\nwant to explore\n✦ today?",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = PureWhite,
+                        fontSize = 35.sp,
+                        lineHeight = 41.sp,
+                        letterSpacing = (-0.8).sp
+                    )
 
-                        // Right Controls: [Model Pill Dropdown] [Mic] [Send Circle]
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            // Model Pill Selector Dropdown (image (1).png)
-                            Box {
-                                Surface(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
-                                        .clickable { showModelDropdown = true },
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = Color(0xFFF1F5F9)
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp)
+                    Spacer(modifier = Modifier.height(22.dp))
+
+                    // Soft Pastel Quick-Focus Pills (inspired by mood/topic picker)
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        quickMoodTopics.chunked(3).forEach { rowTopics ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                rowTopics.forEach { (label, bgColor, prompt) ->
+                                    Surface(
+                                        shape = RoundedCornerShape(14.dp),
+                                        color = bgColor.copy(alpha = 0.90f),
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(14.dp))
+                                            .clickable { viewModel.askRunwayAi(prompt) }
                                     ) {
                                         Text(
-                                            text = selectedModel,
+                                            text = label,
+                                            color = Color(0xFF2B262C),
                                             fontSize = 12.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF334155)
-                                        )
-                                        Icon(
-                                            imageVector = Icons.Filled.KeyboardArrowDown,
-                                            contentDescription = "Select Model",
-                                            tint = Color(0xFF64748B),
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    }
-                                }
-
-                                DropdownMenu(
-                                    expanded = showModelDropdown,
-                                    onDismissRequest = { showModelDropdown = false }
-                                ) {
-                                    models.forEach { model ->
-                                        DropdownMenuItem(
-                                            text = { Text(model, fontWeight = if (model == selectedModel) FontWeight.Bold else FontWeight.Normal) },
-                                            onClick = {
-                                                selectedModel = model
-                                                showModelDropdown = false
-                                                Toast.makeText(context, "Switched to $model", Toast.LENGTH_SHORT).show()
-                                            }
+                                            fontWeight = FontWeight.Medium,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp)
                                         )
                                     }
                                 }
                             }
+                        }
+                    }
 
-                            // Microphone icon
-                            Icon(
-                                imageVector = Icons.Filled.Mic,
-                                contentDescription = "Voice Input",
-                                tint = Color(0xFF64748B),
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clickable {
-                                        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                                            putExtra(
-                                                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                                            )
-                                            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to Disha AI...")
-                                        }
-                                        try {
-                                            speechRecognizerLauncher.launch(intent)
-                                        } catch (e: Exception) {
-                                            Toast.makeText(context, "Voice input not supported on this device", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Floating Staggered Frosted Prompt Cards above Composer
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(18.dp),
+                            color = PureWhite.copy(alpha = 0.88f),
+                            shadowElevation = 4.dp,
+                            modifier = Modifier
+                                .fillMaxWidth(0.72f)
+                                .align(Alignment.Start)
+                                .rotate(-1.5f)
+                                .clip(RoundedCornerShape(18.dp))
+                                .clickable {
+                                    viewModel.askRunwayAi("How to prepare for CHSE boards & JEE together?")
+                                }
+                        ) {
+                            Text(
+                                text = "How to prepare for\nCHSE boards & JEE?",
+                                color = Color(0xFF1F1D24),
+                                fontSize = 13.5.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 19.sp,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp)
                             )
+                        }
 
-                            // Blue / Magenta Glowing Gradient Circular Send Button (image (1).png)
+                        Surface(
+                            shape = RoundedCornerShape(18.dp),
+                            color = PureWhite.copy(alpha = 0.88f),
+                            shadowElevation = 4.dp,
+                            modifier = Modifier
+                                .fillMaxWidth(0.70f)
+                                .align(Alignment.End)
+                                .rotate(1.4f)
+                                .clip(RoundedCornerShape(18.dp))
+                                .clickable {
+                                    viewModel.askRunwayAi("Best scholarships I can apply for right now")
+                                }
+                        ) {
+                            Text(
+                                text = "Best scholarships I can\napply for right now",
+                                color = Color(0xFF1F1D24),
+                                fontSize = 13.5.sp,
+                                fontWeight = FontWeight.Medium,
+                                lineHeight = 19.sp,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(18.dp))
+                }
+            } else {
+                // --- ACTIVE CONVERSATION STATE (Request Header + Frosted Rounded Chat Sheet) ---
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 22.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = "Your request",
+                        color = Color(0xFF3F2D36).copy(alpha = 0.72f),
+                        fontSize = 12.5.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = latestUserRequest,
+                        color = PureWhite,
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 28.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Frosted Glass Chat Stream Sheet
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp, bottomStart = 22.dp, bottomEnd = 22.dp),
+                    color = PureWhite.copy(alpha = 0.86f)
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        // Subtle Drag Pill
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Box(
                                 modifier = Modifier
-                                    .size(38.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(Color(0xFF38BDF8), Color(0xFF0284C7))
-                                        )
-                                    )
-                                    .clickable {
-                                        if (inputText.isNotBlank()) {
-                                            viewModel.askRunwayAi(inputText)
-                                            inputText = ""
+                                    .width(38.dp)
+                                    .height(4.dp)
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(Color(0xFFD4D4D8))
+                            )
+                        }
+
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(messages) { message ->
+                                if (message.isUser) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Surface(
+                                            shape = RoundedCornerShape(
+                                                topStart = 18.dp,
+                                                topEnd = 18.dp,
+                                                bottomStart = 18.dp,
+                                                bottomEnd = 6.dp
+                                            ),
+                                            color = PureWhite,
+                                            shadowElevation = 2.dp,
+                                            border = BorderStroke(1.dp, Color(0xFFF3E2E8)),
+                                            modifier = Modifier.fillMaxWidth(0.84f)
+                                        ) {
+                                            Text(
+                                                text = message.text,
+                                                color = Color(0xFF18181B),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontSize = 14.sp,
+                                                lineHeight = 20.sp,
+                                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp)
+                                            )
                                         }
-                                    },
-                                contentAlignment = Alignment.Center
+                                    }
+                                } else {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(22.dp)
+                                                    .clip(CircleShape)
+                                                    .background(Color(0xFF18181B)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.AutoAwesome,
+                                                    contentDescription = null,
+                                                    tint = PureWhite,
+                                                    modifier = Modifier.size(12.dp)
+                                                )
+                                            }
+                                            Text(
+                                                text = "Disha AI",
+                                                color = Color(0xFF71717A),
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        }
+
+                                        Text(
+                                            text = message.text,
+                                            color = Color(0xFF18181B),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontSize = 14.5.sp,
+                                            lineHeight = 21.sp
+                                        )
+
+                                        // Minimal Action Strip
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(top = 2.dp)
+                                        ) {
+                                            val isSpeakingThis = currentlySpeakingTimestamp == message.timestamp
+                                            Icon(
+                                                imageVector = if (isSpeakingThis) Icons.Filled.Stop else Icons.Filled.GraphicEq,
+                                                contentDescription = if (isSpeakingThis) "Stop Audio" else "Read Aloud",
+                                                tint = if (isSpeakingThis) UdyapCrimson else Color(0xFF71717A),
+                                                modifier = Modifier
+                                                    .size(18.dp)
+                                                    .clickable {
+                                                        if (isSpeakingThis) {
+                                                            TextToSpeechHelper.stop()
+                                                            currentlySpeakingTimestamp = null
+                                                        } else {
+                                                            currentlySpeakingTimestamp = message.timestamp
+                                                            TextToSpeechHelper.speak(
+                                                                context = context,
+                                                                text = message.text,
+                                                                onStart = { currentlySpeakingTimestamp = message.timestamp },
+                                                                onDone = { currentlySpeakingTimestamp = null }
+                                                            )
+                                                        }
+                                                    }
+                                            )
+                                            Icon(
+                                                imageVector = Icons.Filled.ContentCopy,
+                                                contentDescription = "Copy",
+                                                tint = Color(0xFF71717A),
+                                                modifier = Modifier
+                                                    .size(16.dp)
+                                                    .clickable {
+                                                        clipboardManager.setText(AnnotatedString(message.text))
+                                                        Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            )
+                                            Icon(
+                                                imageVector = Icons.Filled.ThumbUp,
+                                                contentDescription = "Helpful",
+                                                tint = Color(0xFF71717A),
+                                                modifier = Modifier
+                                                    .size(16.dp)
+                                                    .clickable {
+                                                        Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Animated 3-dot Thinking Indicator
+                            if (isThinking) {
+                                item {
+                                    DishaTypingDotsIndicator()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            // 4. FLOATING PASTEL-TRIMMED COMPOSER DOCK (Matching ai_ui_d69c81cb.jpg)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .clip(RoundedCornerShape(26.dp))
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFFFCE4EC),
+                                Color(0xFFF9EFE8),
+                                Color(0xFFE3F5E8)
+                            )
+                        )
+                    )
+                    .padding(4.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Pastel Top Status Strip
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "UDYAP Smart",
+                                color = Color(0xFF27272A),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 11.5.sp
+                            )
+                            Text(
+                                text = " • Free AI Guide",
+                                color = Color(0xFF71717A),
+                                fontSize = 11.5.sp
+                            )
+                        }
+
+                        Box {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .clickable { showModelDropdown = true }
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowUpward,
-                                    contentDescription = "Send",
-                                    tint = PureWhite,
-                                    modifier = Modifier.size(20.dp)
+                                Text(
+                                    text = selectedModel,
+                                    color = Color(0xFF27272A),
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 11.5.sp
                                 )
+                                Icon(
+                                    imageVector = Icons.Filled.KeyboardArrowDown,
+                                    contentDescription = "Switch Model",
+                                    tint = Color(0xFF52525B),
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = showModelDropdown,
+                                onDismissRequest = { showModelDropdown = false }
+                            ) {
+                                models.forEach { model ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                model,
+                                                fontWeight = if (model == selectedModel) FontWeight.Bold else FontWeight.Normal
+                                            )
+                                        },
+                                        onClick = {
+                                            selectedModel = model
+                                            showModelDropdown = false
+                                            Toast.makeText(context, "Switched to $model", Toast.LENGTH_SHORT).show()
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // Inner Pure White Composer Surface
+                    Surface(
+                        shape = RoundedCornerShape(22.dp),
+                        color = PureWhite,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 12.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 12.dp)
+                            ) {
+                                if (inputText.isEmpty()) {
+                                    Text(
+                                        text = "Ask Disha anything about study, exams or scholarships...",
+                                        color = Color(0xFFA1A1AA),
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                BasicTextField(
+                                    value = inputText,
+                                    onValueChange = { inputText = it },
+                                    textStyle = TextStyle(
+                                        color = Color(0xFF18181B),
+                                        fontSize = 14.5.sp,
+                                        lineHeight = 20.sp
+                                    ),
+                                    cursorBrush = SolidColor(UdyapCrimson),
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                                    keyboardActions = KeyboardActions(
+                                        onSend = {
+                                            if (inputText.isNotBlank()) {
+                                                viewModel.askRunwayAi(inputText)
+                                                inputText = ""
+                                            }
+                                        }
+                                    ),
+                                    maxLines = 3,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .testTag("disha_chat_input")
+                                )
+                            }
+
+                            // Bottom Minimal Controls: [Attach] [Sparkle] [Mic] ...... [Circular Send ↑]
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.AttachFile,
+                                        contentDescription = "Attach Document",
+                                        tint = Color(0xFF52525B),
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clickable {
+                                                Toast.makeText(context, "Attach marksheet or notes PDF", Toast.LENGTH_SHORT).show()
+                                            }
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.AutoAwesome,
+                                        contentDescription = "Suggest Prompt",
+                                        tint = Color(0xFF52525B),
+                                        modifier = Modifier
+                                            .size(19.dp)
+                                            .clickable {
+                                                inputText = "Create a 7-day board exam & Olympiad study schedule for me"
+                                            }
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.Mic,
+                                        contentDescription = "Voice Input",
+                                        tint = Color(0xFF52525B),
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clickable {
+                                                val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                                                    putExtra(
+                                                        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                                                    )
+                                                    putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to Disha AI...")
+                                                }
+                                                try {
+                                                    speechRecognizerLauncher.launch(intent)
+                                                } catch (e: Exception) {
+                                                    Toast.makeText(context, "Voice input not supported on this device", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(if (inputText.isNotBlank()) UdyapCrimson else Color(0xFF27272A))
+                                        .testTag("disha_send_button")
+                                        .clickable {
+                                            if (inputText.isNotBlank()) {
+                                                viewModel.askRunwayAi(inputText)
+                                                inputText = ""
+                                            }
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ArrowUpward,
+                                        contentDescription = "Send",
+                                        tint = PureWhite,
+                                        modifier = Modifier.size(19.dp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DishaTypingDotsIndicator() {
+    val infiniteTransition = rememberInfiniteTransition(label = "dishaTypingDots")
+    val dot1Alpha by infiniteTransition.animateFloat(
+        initialValue = 0.25f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(550, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "dot1"
+    )
+    val dot2Alpha by infiniteTransition.animateFloat(
+        initialValue = 0.25f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(550, delayMillis = 160, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "dot2"
+    )
+    val dot3Alpha by infiniteTransition.animateFloat(
+        initialValue = 0.25f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(550, delayMillis = 320, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "dot3"
+    )
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 6.dp)
+    ) {
+        listOf(dot1Alpha, dot2Alpha, dot3Alpha).forEach { alphaVal ->
+            Box(
+                modifier = Modifier
+                    .size(7.dp)
+                    .alpha(alphaVal)
+                    .clip(CircleShape)
+                    .background(Color(0xFF27272A))
+            )
         }
     }
 }
@@ -2418,7 +2694,9 @@ private fun AiGeometricHeroLogo(size: androidx.compose.ui.unit.Dp) {
 }
 
 // -----------------------------------------------------------
-// Smooth Dual Moving Carousel for Recommended For You (Two Separate Lines: Left & Right)
+// Smooth Dual Opposing Slow-Moving Carousel for Recommended For You
+// Row 1 glides slowly LEFT -> RIGHT; Row 2 glides slowly RIGHT -> LEFT.
+// All cards share identical uniform dimensions with clean ellipsis truncation.
 // -----------------------------------------------------------
 @Composable
 fun RecommendedDualMovingCarousel(
@@ -2426,34 +2704,47 @@ fun RecommendedDualMovingCarousel(
     row2Items: List<RecommendationItem>,
     onItemClick: (RecommendationItem) -> Unit
 ) {
-    // ROW 1: Smooth continuous motion moving towards LEFT
-    val row1ScrollState = rememberLazyListState()
-    var isRow1Interacting by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    // Smooth gentle speed (~24dp per second)
+    val speedPxPerSec = remember(density) { with(density) { 24.dp.toPx() } }
 
-    LaunchedEffect(isRow1Interacting, row1Items) {
-        if (!isRow1Interacting && row1Items.isNotEmpty()) {
+    // ROW 1: Glides slowly LEFT -> RIGHT (negative scrollBy moves items rightwards)
+    val row1ScrollState = rememberLazyListState(initialFirstVisibleItemIndex = 500)
+    val isRow1Dragged by row1ScrollState.interactionSource.collectIsDraggedAsState()
+
+    LaunchedEffect(isRow1Dragged, row1Items) {
+        if (!isRow1Dragged && row1Items.isNotEmpty()) {
+            var lastNanos = 0L
             while (true) {
-                delay(30)
-                row1ScrollState.scrollBy(1.3f)
-                if (!row1ScrollState.canScrollForward) {
-                    row1ScrollState.scrollToItem(0)
+                withFrameNanos { frameNanos ->
+                    if (lastNanos != 0L) {
+                        val dtSec = ((frameNanos - lastNanos) / 1_000_000_000f).coerceAtMost(0.05f)
+                        if (row1ScrollState.canScrollBackward) {
+                            row1ScrollState.dispatchRawDelta(-speedPxPerSec * dtSec)
+                        }
+                    }
+                    lastNanos = frameNanos
                 }
             }
         }
     }
 
-    // ROW 2: Smooth continuous motion moving towards RIGHT (Reverse scroll)
-    val row2ScrollState = rememberLazyListState(initialFirstVisibleItemIndex = 400)
-    var isRow2Interacting by remember { mutableStateOf(false) }
+    // ROW 2: Glides slowly RIGHT -> LEFT (positive scrollBy moves items leftwards)
+    val row2ScrollState = rememberLazyListState(initialFirstVisibleItemIndex = 500)
+    val isRow2Dragged by row2ScrollState.interactionSource.collectIsDraggedAsState()
 
-    LaunchedEffect(isRow2Interacting, row2Items) {
-        if (!isRow2Interacting && row2Items.isNotEmpty()) {
+    LaunchedEffect(isRow2Dragged, row2Items) {
+        if (!isRow2Dragged && row2Items.isNotEmpty()) {
+            var lastNanos = 0L
             while (true) {
-                delay(30)
-                if (row2ScrollState.canScrollBackward) {
-                    row2ScrollState.scrollBy(-1.3f)
-                } else {
-                    row2ScrollState.scrollToItem(row2Items.size * 100)
+                withFrameNanos { frameNanos ->
+                    if (lastNanos != 0L) {
+                        val dtSec = ((frameNanos - lastNanos) / 1_000_000_000f).coerceAtMost(0.05f)
+                        if (row2ScrollState.canScrollForward) {
+                            row2ScrollState.dispatchRawDelta(speedPxPerSec * dtSec)
+                        }
+                    }
+                    lastNanos = frameNanos
                 }
             }
         }
@@ -2463,22 +2754,14 @@ fun RecommendedDualMovingCarousel(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // Line 1: Gliding smoothly to the LEFT
+        // Top Row: Moving slowly Left -> Right
         LazyRow(
             state = row1ScrollState,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent()
-                            isRow1Interacting = event.changes.any { it.pressed }
-                        }
-                    }
-                }
+            horizontalArrangement = Arrangement.spacedBy(11.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            items(1000) { index ->
+            items(1200) { index ->
                 if (row1Items.isNotEmpty()) {
                     val item = row1Items[index % row1Items.size]
                     RecommendationCardSimple(item = item, onItemClick = onItemClick)
@@ -2486,22 +2769,14 @@ fun RecommendedDualMovingCarousel(
             }
         }
 
-        // Line 2: Gliding smoothly to the RIGHT
+        // Bottom Row: Moving slowly Right -> Left
         LazyRow(
             state = row2ScrollState,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent()
-                            isRow2Interacting = event.changes.any { it.pressed }
-                        }
-                    }
-                }
+            horizontalArrangement = Arrangement.spacedBy(11.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            items(1000) { index ->
+            items(1200) { index ->
                 if (row2Items.isNotEmpty()) {
                     val item = row2Items[index % row2Items.size]
                     RecommendationCardSimple(item = item, onItemClick = onItemClick)
@@ -2518,8 +2793,8 @@ private fun RecommendationCardSimple(
 ) {
     Surface(
         modifier = Modifier
-            .width(168.dp)
-            .height(108.dp)
+            .width(164.dp)
+            .height(94.dp)
             .clip(RoundedCornerShape(14.dp))
             .clickable { onItemClick(item) },
         shape = RoundedCornerShape(14.dp),
@@ -2528,15 +2803,17 @@ private fun RecommendationCardSimple(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(13.dp),
+                .padding(horizontal = 13.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = item.title,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF1E293B),
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = item.subtitle,

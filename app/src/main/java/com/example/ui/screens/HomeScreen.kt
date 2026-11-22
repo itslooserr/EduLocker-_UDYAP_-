@@ -325,10 +325,11 @@ fun HomeScreen(
             // 2. "CatchUp" SECTION
             Text(
                 text = "CatchUp",
-                fontFamily = NewsreaderFontFamily,
-                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = TextDark,
-                fontSize = 23.sp
+                fontSize = 19.sp,
+                letterSpacing = (-0.2).sp
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -572,10 +573,11 @@ fun HomeScreen(
             // 5. "Documents" SECTION (2 rows x 5 columns matching 10_d9df07b3.png)
             Text(
                 text = "Documents",
-                fontFamily = NewsreaderFontFamily,
-                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = TextDark,
-                fontSize = 22.sp
+                fontSize = 19.sp,
+                letterSpacing = (-0.2).sp
             )
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -672,10 +674,11 @@ fun HomeScreen(
             // 6. "Live Quiz & Action" SECTION (Exact from 10_d9df07b3.png)
             Text(
                 text = "Live Quiz & Action",
-                fontFamily = NewsreaderFontFamily,
-                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = TextDark,
-                fontSize = 22.sp
+                fontSize = 19.sp,
+                letterSpacing = (-0.2).sp
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -821,10 +824,11 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Scholarships & Grants",
-                    fontFamily = NewsreaderFontFamily,
-                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
                     color = TextDark,
-                    fontSize = 20.sp
+                    fontSize = 19.sp,
+                    letterSpacing = (-0.2).sp
                 )
                 Text(
                     text = "more",
@@ -1445,7 +1449,7 @@ private fun ScholarshipDetailModal(
                 Text(scholarship.eligibility, color = TextMuted, fontSize = 12.5.sp, lineHeight = 18.sp)
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Required UDYAP Vault Documents", fontWeight = FontWeight.SemiBold, color = TextDark, fontSize = 13.5.sp)
+                Text("Required UDYAP Documents", fontWeight = FontWeight.SemiBold, color = TextDark, fontSize = 13.5.sp)
                 Spacer(modifier = Modifier.height(6.dp))
                 scholarship.requiredDocs.forEach { doc ->
                     Row(
