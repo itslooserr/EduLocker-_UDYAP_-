@@ -167,4 +167,6 @@ Third-party names, trademarks, and resources remain the property of their respec
 Empowering Every Youth. Enabling Every Future.
 Built with purpose. Driven by possibilities.
 
+© UDYAP 2026 • ALL RIGHTS RESERVED 
+
 </div>
