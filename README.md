@@ -162,13 +162,15 @@ Third-party names, trademarks, and resources remain the property of their respec
 
 ---
 
-<div align="center">UDYAP
+<div align="center">
+
+<img width="2000" height="2000" alt="1000298962" src="https://github.com/user-attachments/assets/700ab5b4-7aec-41e3-a00c-e64dd8d9c0a7" />
+
+
 
 Empowering Every Youth. Enabling Every Future.
 Built with purpose. Driven by possibilities.
 
 © UDYAP 2026
-<img width="2000" height="2000" alt="1000298962" src="https://github.com/user-attachments/assets/700ab5b4-7aec-41e3-a00c-e64dd8d9c0a7" />
-
 
 </div>
